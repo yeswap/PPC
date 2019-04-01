@@ -395,7 +395,6 @@ error_reporting(E_ALL);
       $tempAry[]=$row['VoiceRoaming'];
       $tempAry[]=$row['DataRoaming'];
       $tempAry[]=$row['AutopayDiscount'];
-      $tempAry[]=''; // ShowWork
       $rowMeta[$PlanID][]=$tempAry;
       }
       echo '</table>'."\n";  // Close the container

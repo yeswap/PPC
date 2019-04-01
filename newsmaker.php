@@ -37,7 +37,6 @@ $feed->set_feed_url(array(
 	'http://cricketwireless.mediaroom.com/news-releases?pagetemplate=rss',
 	'https://www.tmonews.com/tag/prepaid/feed/',
 	'https://www.tmonews.com/tag/metropcs/feed/',
-	'https://bestcellular.com/feed/',
 	'http://blog.freedompop.com/feed/',
 	'https://www.blog.google/products/project-fi/rss',
 	'https://bgr.com/tag/metropcs/feed/',
@@ -85,7 +84,7 @@ $connection = new mysqli('db151c.pair.com', 'yeswap_3', 'odfft2v02cc0', 'yeswap_
 if ($connection->connect_errno > 0) {
  	die ('Unable to connect to database [' . $connection->connect_error . ']');
 }
-$connection->query("SET time_zone='-08:00';");
+$connection->query("SET time_zone='-07:00';");
 $sql = "SELECT title,permalink,creator,subject,UNIX_TIMESTAMP(date) as date,content FROM NewsItems WHERE date BETWEEN ADDDATE(NOW(),INTERVAL -2 WEEK) AND NOW()";
 
 if (!$result = $connection->query($sql)) {
@@ -182,7 +181,7 @@ ob_start();
 <meta property="og:url" content="https://prepaidcompare.net" />
 <meta property="og:site_name" content="PrepaidCompare" />
 <meta property="og:image" content="https://prepaidcompare.net/apple-icon.png" />
-
+<meta name="Googlebot-News" content="noindex, nofollow">
 <script type="application/ld+json">
 [
 {
@@ -457,7 +456,8 @@ thead, th {color:white; background-color:#007d15;}
     width: 80%; /* Could be more or less, depending on screen size */
     max-width:380px;
 }
-.modal-content h2 {
+#moTitle {
+  margin: .5em auto;
   text-align:center;
 }
 /* The Close Button */
@@ -667,7 +667,7 @@ ul.menu li.current_page_item a, ul.menu li.current_page_item a:hover {
         <!-- Modal content -->
         <div class="modal-content">
           <span class="close">&times;</span>
-          <p><b><span id="moBrand">Brand</span>
+          <p id="moTitle"><b><span id="moBrand">Brand</span>
           <i><span id="moPlan"></span></i></b></p>
           <div class="moItem">Website: <span id="moURL"></span></div>
           <div><span class="moItem" >Network:</span> <span id="moNetw"></span></div>
