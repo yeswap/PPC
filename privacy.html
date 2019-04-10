@@ -100,11 +100,11 @@ table, caption, tbody, tfoot, thead, tr, th, td {
       color: #007d15;
   }
   #branding{
-    margin-bottom: 4pt;
+    margin-bottom: 3pt;
   }
   img {
     max-width:98% !important;
-          height:auto !important;
+    height:auto !important;
   }
   p {margin: 1em 0;}
 
@@ -143,7 +143,7 @@ table, caption, tbody, tfoot, thead, tr, th, td {
       display: table-cell;
       text-align: center;
   }
-
+  .separator {clear:both;}
   #site-title {
     border-bottom: 1px solid #007d15;
     text-align: center;
@@ -180,19 +180,20 @@ table, caption, tbody, tfoot, thead, tr, th, td {
     max-width:640px;
     background-color:white;
   }
+  .item{
+    line-height: 1.4;
+  }
   /* =Menu
   -------------------------------------------------------------- */
-  .menu {
-    border-bottom: 1px solid #007d15;
-    padding-bottom: .4em;
+  #menu-container{
+   border-bottom: 1px solid #007d15;
+   overflow: hidden;
   }
-  ul.menu {
-    margin-top: 0pt;
-    margin-right: 0pt;
-    margin-bottom: 5pt;
-    margin-left: 0pt;
+  #menu-container nav{
+    height:auto;
+    width:auto;
+    float:left;
   }
-  
   ul.menu li {
     display: inline;
     margin: 0;
@@ -241,12 +242,25 @@ table, caption, tbody, tfoot, thead, tr, th, td {
     background-repeat: repeat;
     background-attachment: scroll;
   }
+  ul.menu {
+    margin-top:2px;
+  }
+  #socialicons img{
+    height:25px;
+    width:auto;
+  }
+  #socialicons a{
+    position: relative;
+    top: -15%;
+  }
+  #socialicons {
+    float: right;
+  }
   @media (max-width: 640px) {
     #news, #page, html {margin:0}
   }
   @media screen and (max-width: 61em){
     .item {padding: 0 .5em;}
-    #page {padding:0;}
     ul.menu {padding-left:.3em;}
   }
   @media (max-width: 40em) {
@@ -273,23 +287,35 @@ table, caption, tbody, tfoot, thead, tr, th, td {
 </div>
 <div class="separator"></div>
 </div><!-- #branding -->
+<div id="menu-container">
+<nav>
  <ul class="menu">
   <li class="page_item"><a href="/">Home</a></li>
   <li class="page_item"><a href="/profiles/" title="Prepaid Operator Profiles">Operators</a></li>
   <li class="page_item"><a href="/about.html">About</a></li>
   <li class="current_page_item"><a href="/privacy.html" title="Privacy Policy">Privacy</a></li>
   <li class="page_item"><a href="/help.html">Help</a></li>
- </ul>		<div class="item">
-			<h2>Privacy Policy for PrepaidCompare.net</h2>
+ </ul>
+</nav>
+  <div id="socialicons">
+    <a target="_blank" title="Twitter" href="https://www.twitter.com/yeswap"><img alt="twitter" src="twit.png" border="0"></a>
+    <a targt="_blank" title="Facebook" href="https://www.facebook.com/ PrepaidCompare"><img alt="Facebook" src="fb.png" border="0"></a>
+  </div>
+  <div class="separator"></div>
+</div>
+
+<div class="item">
+			
+<h2>Privacy Policy for PrepaidCompare.net</h2>
 <p>The privacy of our visitors to <em>PrepaidCompare</em> is important to us.</p>
-<p>Here is information on what types of personal information we receive and collect when you visit PrepaidCompare, and how we safeguard your information. First and foremost we never sell your personal information to third parties.</p>
+<p>Here is information on what types of personal information we receive and collect when you visit PrepaidCompare, and how we safeguard your information. First and foremost, we never sell your personal information to third parties.</p>
 <p><strong>Personal Information we collect</strong><br />
 We do not collect any personally identifiable information from visitors. </p>
 <p><strong>Log Files</strong><br />
-Our web host, <a href="https://www.pair.com/">Pair Networks</a>, creates log files recording all visits to this site. The information in the log files includes your IP (internet protocol) address, your ISP (internet service provider), the browser you used to visit our site (such as Internet Explorer or Firefox), the time you visited our site and which pages you visited throughout our site. This information is used only for statistical purposes to improve the performance and usability of the site.</p>
+Our web host, <a href="https://www.pair.com/">Pair Networks</a>, creates log files recording all visits to this site. The information in the log files includes your IP (internet protocol) address, your ISP (internet service provider), the browser you used to visit our site (such as Chrome, Safari or Firefox), the time you visited our site and which pages you visited throughout our site. This information is used only for statistical purposes to improve the performance and usability of the site.</p>
 <p><strong>Cookies and Web Beacons</strong><br />
 We do not use cookies. Our CDN provider <a href="https://support.cloudflare.com/hc/en-us/articles/200170156-What-does-the-CloudFlare-cfduid-cookie-do-">Cloudflare</a> sets a cookie in your browser to "<i>...identify individual clients behind a shared IP address and apply security settings on a per-client basis. For example, if the visitor is in a coffee shop where there are a bunch of infected machines, but the specific visitor's machine is trusted (e.g. because they've completed a challenge within your Challenge Passage period), the cookie allows us to identify that client and not challenge them again. It does not correspond to any user ID in your web application, and does not store any personally identifiable information.</i>"</p>
-<p>You can chose to disable or selectively turn off our cookies or third-party cookies in your browser settings, or by managing preferences in programs such as Norton Internet Security. This will not affect the operation of this site, however, it can affect how you are able to interact with other websites. This could include the inability to login to services or programs, such as logging into forums or accounts.</p>
+<p>You can chose to disable or selectively turn off our cookies or third-party cookies in your browser settings, or with a browser extension such as uBlock Origin. Blocking cookies will not affect the operation of this site, however, it can affect how you are able to interact with other websites. This could include the inability to login to services or programs, such as logging into forums or accounts.</p>
 <p><strong>Interest Based Advertising</strong><br />
 We do not use interest based advertising or web trackers.</p>
 		</div>

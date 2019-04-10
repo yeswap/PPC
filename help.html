@@ -79,7 +79,7 @@ h1, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
 del, dfn, em, font, ins, kbd, q, s, samp,
 small, strike, sub, sup, tt, var,
-dl, dt, dd, ol, li,
+dl, dt, dd, ol, ul, li,
 fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td {
   border: 0;
@@ -100,11 +100,11 @@ table, caption, tbody, tfoot, thead, tr, th, td {
       color: #007d15;
   }
   #branding{
-    margin-bottom: 4pt;
+    margin-bottom: 3pt;
   }
   img {
     max-width:98% !important;
-          height:auto !important;
+    height:auto !important;
   }
   p {margin: 1em 0;}
 
@@ -143,7 +143,7 @@ table, caption, tbody, tfoot, thead, tr, th, td {
       display: table-cell;
       text-align: center;
   }
-
+  .separator {clear:both;}
   #site-title {
     border-bottom: 1px solid #007d15;
     text-align: center;
@@ -180,20 +180,29 @@ table, caption, tbody, tfoot, thead, tr, th, td {
     max-width:640px;
     background-color:white;
   }
+  .item{
+    line-height: 1.4;
+  }
+  .item ul {
+    display: block;
+    list-style-type: disc;
+    margin-block-start: 1em;
+    margin-block-end: 1em;
+    margin-inline-start: 0px;
+    margin-inline-end: 0px;
+    padding-inline-start: 40px;
+  }
   /* =Menu
   -------------------------------------------------------------- */
-  .menu {
-    border-bottom: 1px solid #007d15;
-    padding-bottom: .4em;
-    padding-left: 0;
+  #menu-container{
+   border-bottom: 1px solid #007d15;
+   overflow: hidden;
   }
-  ul.menu {
-    margin-top: 0pt;
-    margin-right: 0pt;
-    margin-bottom: 5pt;
-    margin-left: 0pt;
+  #menu-container nav{
+    height:auto;
+    width:auto;
+    float:left;
   }
-  
   ul.menu li {
     display: inline;
     margin: 0;
@@ -242,12 +251,25 @@ table, caption, tbody, tfoot, thead, tr, th, td {
     background-repeat: repeat;
     background-attachment: scroll;
   }
+  ul.menu {
+    margin-top:2px;
+  }
+  #socialicons img{
+    height:25px;
+    width:auto;
+  }
+  #socialicons a{
+    position: relative;
+    top: -15%;
+  }
+  #socialicons {
+    float: right;
+  }
   @media (max-width: 640px) {
     #news, #page, html {margin:0}
   }
   @media screen and (max-width: 61em){
     .item {padding: 0 .5em;}
-    #page {padding:0;}
     ul.menu {padding-left:.3em;}
   }
   @media (max-width: 40em) {
@@ -274,6 +296,8 @@ table, caption, tbody, tfoot, thead, tr, th, td {
 </div>
 <div class="separator"></div>
 </div><!-- #branding -->
+<div id="menu-container">
+<nav>
  <ul class="menu">
   <li class="page_item"><a href="/">Home</a></li>
   <li class="page_item"><a href="/profiles/" title="Operator Profiles">Operators</a></li>
@@ -281,6 +305,13 @@ table, caption, tbody, tfoot, thead, tr, th, td {
   <li class="page_item"><a href="/privacy.html" title="Privacy Policy">Privacy</a></li>
   <li class="current_page_item"><a href="/help.html">Help</a></li>
  </ul>
+ </nav>
+  <div id="socialicons">
+    <a target="_blank" title="Twitter" href="https://www.twitter.com/yeswap"><img alt="twitter" src="twit.png" border="0"></a>
+    <a targt="_blank" title="Facebook" href="https://www.facebook.com/ PrepaidCompare"><img alt="Facebook" src="fb.png" border="0"></a>
+  </div>
+  <div class="separator"></div>
+</div>
 <div class="item">
 <h2>Plan Finder Help</h2>
 <p>The <em>PrepaidCompare</em> Plan Finder is designed to help you find the best prepaid plans for your needs.</p>
