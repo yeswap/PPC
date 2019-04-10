@@ -2,12 +2,21 @@
    var translate = "translate(0,"+this.scrollTop+"px)";
    this.querySelector("thead").style.transform = translate;
   });
-
+// globals
     var eTbl = {"monCost": 0,"oper":1, "netw":2,"cost":3,"costTyp":4,"mins":5,"txts":6,"data":7,"throtld":8,"ID":9,"isPayGo":10,"HasRollover":11,"MMS":12,"plan":13}; //JavaScript "enum" for array row indexes
     
     var ePersist = {monCost:0,plan:1,cost:2,mins:3,txts:4,data:5,lineFee:6, multiLine:7, notes:8, oprID:9, AllowsHotspot:10, Hotspot_HS_Limit:11, Hotspot_HS_Throttle:12, HotspotThrottle:13, TextRoaming:14, VoiceRoaming:15, DataRoaming:16, AutopayDiscount:17, showWork:18};
     
-    var eFmlyPln = {Cost:0, MinsShared:1, DataShared:2};
+    var eFmlyPln = {Cost:0, MinsShared:1, TxtsShared:2, DataShared:3};
+    
+    //temporary globals until plan? and request? objects are implemented
+    var row, Persist, rowMins, rowMB, rowTexts;
+    
+    //From https://stackoverflow.com/questions/1144783/how-to-replace-all-occurrences-of-a-string-in-javascript
+    String.prototype.replaceAll = function(search, replacement) {
+      var target = this;
+      return target.split(search).join(replacement);
+    };
     
     //From https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/indexOf (adds indexOf to old browsers like IE < 10)
     if (!Array.prototype.indexOf)
@@ -40,6 +49,7 @@
     }
 
     function findPlans() {
+      // read web form
       var minElem = document.getElementById("mins");
       var mins = parseInt(minElem.value,10);
       if (isNaN(mins)) {mins = 0;}
@@ -53,11 +63,17 @@
       if (mbgb == "GB") {
         mb *= 1024;
       }
+      
       var linesElem = document.getElementById("lines");
       var lines = parseInt(linesElem.value,10);
       var payGoCost = 0;
       var aryNetworks = [];
-      var savedVals;
+      var savedVals, addonUsed;
+      var monCstDesc = "";
+      
+      //new vars 3/21/19
+      var colNetwork, rowNetwork, colPlanID, rowPlanID, planLines, thisMB;
+      var colMins, colTexts, colMB, iVal, colCost;
       
       if (document.getElementById("ATTyes").checked){
         aryNetworks.push("ATT");
@@ -75,9 +91,8 @@
       var needsHotspot = document.getElementById("hotspot").checked;
       var needsIosMMS = document.getElementById("iosMMS").checked;
       var needsunlimTrot = document.getElementById("unlimTrot").checked;
-      
-      //alert("Mins=" + mins + "Texts=" + texts + "MB =" + mb + "Lines=" + lines);
 
+      // loop thru table calculating cost andhiding rows that don't meet needs
       var table = document.getElementsByTagName('TABLE')[0];
       for (var i = 2; i < table.rows.length; i++) {
         row = table.rows[i];
@@ -104,6 +119,7 @@
             continue; // jump over this row
           }
         }
+        // get plan ID and init Persist array
         colPlanID = row.cells[eTbl.ID];
         rowPlanID = parseInt(colPlanID.textContent,10);
         savedVals = Persist[rowPlanID][0];
@@ -161,12 +177,17 @@
         payGoCost = 0;
         if(rowMins < 1){
           payGoCost += mins * rowMins;
+          //monCstDesc += mins + " minutes times " + rowMins + " ";
         }
-        if(rowTexts < 1){payGoCost += texts * rowTexts;}
+        if(rowTexts < 1){
+          payGoCost += texts * rowTexts;
+          //monCstDesc += texts + " texts times " + rowTexts + " ";
+        }
         if(rowMB < 1 || rowMB == 2.05){
           //use unrounded cost per MB from persist array, not rounded amount in table
           iVal = parseFloat(savedVals[ePersist.data]);
           payGoCost += thisMB * iVal;
+          //monCstDesc += thisMB + " MB times " + rowMB + " ";
         }
         colCost = row.cells[eTbl.cost];
         Cost = parseFloat(colCost.textContent);
@@ -174,20 +195,28 @@
         CostPeriod = colCostPeriod.textContent;
         if (CostPeriod === '90 days') {
           costPerMo = Cost/3;
-        }else if (CostPeriod === '60 days') {
+          monCstDesc = "$" + Cost + "/3 = $" + costPerMo.toFixed(2);
+        }else if (CostPeriod === '60 days ') {
           costPerMo = Cost/2;
+          monCstDesc = "$" + Cost + "/2 = $" + costPerMo.toFixed(2);
         }else if (CostPeriod === '120 days') {
           costPerMo = Cost/4;
+          monCstDesc = "$" + Cost + "/4 = $" + costPerMo.toFixed(2);
         }else if (CostPeriod === '180 days') {
           costPerMo = Cost/6;
+          monCstDesc = "$" + Cost + "/6 = $" + costPerMo.toFixed(2);
         }else if (CostPeriod === 'year') {
           costPerMo = Cost/12;
+          monCstDesc = "$" + Cost + "/12 = $" + costPerMo.toFixed(2);
         }else if (CostPeriod === 'day') {
           costPerMo = Cost * 30;
+          monCstDesc = "$" + Cost + "times 30 = $" + costPerMo.toFixed(2);
         }else if (CostPeriod === "doesn't expire") {
           costPerMo = 0;
+          monCstDesc = "0";
         }else{
           costPerMo = Cost;
+          monCstDesc = "$" + Cost;
         }
         colPlan = row.cells[eTbl.plan];
         colPerMo = row.cells[eTbl.monCost];
@@ -197,39 +226,49 @@
           if (payGoCost > costPerMo) {
             costPerMo = payGoCost;
             colPerMo.textContent = payGoCost.toFixed(2);
+            monCstDesc = "$" + colPerMo.textContent + " PayGo cost";
           }else{
             colPerMo.textContent = costPerMo.toFixed(2);
+            monCstDesc = "$" + colPerMo.textContent + " minimum monthly cost";
           }
         }
+        addonUsed = false;
         if ((colMB.textContent == "Unlimited" || rowMB >= thisMB) ||
         (rowMB > 0 && rowMB < 1) || (rowMB== 2.05)){
           dataOK = true;
         }else{
           dataOK = (tryAddon("d", row.cells, rowMB, thisMB));
+          addonUsed = dataOK;
         }
         if ((colMins.textContent == "Unlimited" || rowMins >= mins) ||
         (rowMins > 0 && rowMins < 1)){
             minsOK = true;
         }else{
           minsOK = (tryAddon("m", row.cells, rowMins, mins));
+          addonUsed = minsOK;
         }
         if((colTexts.textContent == "Unlimited" || rowTexts >= texts) ||
         (rowTexts > 0 && rowTexts < 1)){
           txtsOK = true;
         }else{
           txtsOK = tryAddon("t", row.cells, rowTexts, texts);
+          addonUsed = txtsOK;
         }
         if(dataOK && minsOK && txtsOK) {
           costPerMo = parseFloat(row.cells[eTbl.monCost].textContent);
           nLineFee = parseFloat(savedVals[ePersist.lineFee]);
           costPerMo += nLineFee;
           row.style.display = "table-row";
-          if(rowMB < 3 && isPayGo === "0"){
+          if(rowMB < 3 && isPayGo === "0" && payGoCost){
             // ProjectFi and other non PayGo with per MB data
             calcedCost = payGoCost + costPerMo;
+            monCstDesc = costPerMo + " + " + payGoCost + "PayGo cost";
             colPerMo.textContent = calcedCost.toFixed(2);
           }else{
             colPerMo.textContent = costPerMo.toFixed(2);
+          }
+          if (nLineFee){
+            monCstDesc += " + $" + nLineFee + " line fee";
           }
         }else{
             row.style.display = "none";
@@ -245,62 +284,164 @@
         }
 
         if (lines > 1 && planLines == 0){
-          CalcFmylPlans (lines, payGoCost, mb, mins);
+          monCstDesc = CalcFmylPlans (row.cells, lines, payGoCost, mb, mins, texts, monCstDesc);
+          savedVals[ePersist.showWork] = monCstDesc;
+        }else if (savedVals[ePersist.showWork]) {
+          savedVals[ePersist.showWork] = monCstDesc + savedVals[ePersist.showWork];
+        }else{
+          savedVals[ePersist.showWork] = monCstDesc;
+        }
+        if (addonUsed && lines ==1) {
+          savedVals[ePersist.showWork] += " = " + colPerMo.textContent;
         }
        } // end for
     sortTable("planTbl");
     scrollToTop(table);
     loader.style.display = "none";
   }
-  function CalcFmylPlans (lines, payGoCost, mb, mins){
-    var calcedCost = parseFloat(colPerMo.textContent);
-    var FmlyPlnCst, i, bigPart, secondPart, testCost, linesFound;
+  function CalcFmylPlans (cells, lines, payGoCost, mb, mins, texts, monCstDesc){
+    var calcedCost = parseFloat(colPerMo.textContent), i, j;
+    var FmlyPlnCst, bigPart, secondPart, testCost, linesFound = 0, bigCost, smallCost, tmpShowWork, needsTotal = false, fmlyPlanDesc;
+    var rowPlanID = parseInt(cells[eTbl.ID].textContent,10);
+    var savedVals = Persist[rowPlanID][0];
+    var addonDesc = savedVals[ePersist.showWork];
+    var prependAddon = true;
+
     //Are there any family plans?
     if (FmlyPlns[rowPlanID] !== undefined){
+      prependAddon = false;
       // Is there the exact plan we need?
       if (FmlyPlns[rowPlanID][lines] !== undefined){
         linesFound = lines;
         FmlyPlnCst = Number(FmlyPlns[rowPlanID][lines][eFmlyPln.Cost]);
+        fmlyPlanDesc = "$" + FmlyPlnCst + " " + lines + " line plan";
+        //savedVals[ePersist.showWork contains addons
+        if (savedVals[ePersist.showWork]){
+          needsTotal = true;
+        }
+        monCstDesc = "";
       }else{
         //try with largest available family plans
         for (i = lines-1; i> 1; i--){
           if (FmlyPlns[rowPlanID][i] !== undefined){
             linesFound = i;
-            FmlyPlnCst = Number(FmlyPlns[rowPlanID][i][eFmlyPln.Cost]);
+            bigCost = Number(FmlyPlns[rowPlanID][i][eFmlyPln.Cost]);
+            FmlyPlnCst = bigCost;
             bigPart = linesFound;
             secondPart = lines - bigPart;
-            testCost = Number(FmlyPlns[rowPlanID][bigPart][eFmlyPln.Cost]);
-            if(FmlyPlns[rowPlanID][secondPart] !== undefined){
-              FmlyPlnCst += Number(FmlyPlns[rowPlanID][secondPart][eFmlyPln.Cost]);
-            }else{
-              FmlyPlnCst += calcedCost * secondPart;
+            j = 1;
+            while(secondPart > bigPart){
+              secondPart -= bigPart;
+              FmlyPlnCst += bigCost;
+              j++;
             }
+            //FmlyPlnCst = Number(FmlyPlns[rowPlanID][bigPart][eFmlyPln.Cost]);
+            tmpShowWork = j + " $" + bigCost + " " + bigPart + " line plan" + (j==1 ? " " : "s ");
+            if(FmlyPlns[rowPlanID][secondPart] !== undefined){
+              smallCost = Number(FmlyPlns[rowPlanID][secondPart][eFmlyPln.Cost]);
+              FmlyPlnCst += smallCost;
+              tmpShowWork +=  "+ 1 $" + smallCost + " " + secondPart + " line  plan ";
+             }else{
+              FmlyPlnCst += calcedCost * secondPart;
+              if (secondPart == 1){
+                tmpShowWork += "+ 1 $" + calcedCost + " 1 line plan";
+              } else {
+                tmpShowWork += "+ " + secondPart + " $" + calcedCost + " 1 line plans";
+              }
+            }
+            needsTotal = true;
+            break;
           }
-          break;
         }
         // try again spliting lines in half
         bigPart = Math.ceil(lines/2);
         secondPart = Math.floor(lines/2);
         if((FmlyPlns[rowPlanID][bigPart] !== undefined) &&
         (FmlyPlns[rowPlanID][secondPart] !== undefined)) {
-          splitCost = Number(FmlyPlns[rowPlanID][secondPart][eFmlyPln.Cost]) +
-          Number(FmlyPlns[rowPlanID][bigPart][eFmlyPln.Cost]);
+          bigCost = Number(FmlyPlns[rowPlanID][bigPart][eFmlyPln.Cost]);
+          smallCost = Number(FmlyPlns[rowPlanID][secondPart][eFmlyPln.Cost]);
+          splitCost = bigCost + smallCost;
           if (splitCost < FmlyPlnCst){
             FmlyPlnCst = splitCost;
+            fmlyPlanDesc = "+ $" + bigCost + " " + bigPart + " line  plan + $" + smallCost + " " + secondPart+ " line plan";
+          }else{
+            fmlyPlanDesc = tmpShowWork;
           }
+        }else{
+          fmlyPlanDesc = tmpShowWork;
         }
+        monCstDesc = "";
       }
-      savedVals = Persist[rowPlanID][0];
       if (payGoCost){
         FmlyPlnCst += payGoCost * lines;
-      }else if (calcedCost > savedVals[ePersist.monCost]){
-        FmlyPlnCst += calcedCost;
-      }else{
-        if (FmlyPlns[rowPlanID][linesFound][eFmlyPln.MinsShared] == "1" && mins * lines > rowMins){
+      }
+      //Family plan(s) found. Do we need any addons?
+      if (FmlyPlns[rowPlanID][linesFound][eFmlyPln.MinsShared] == "1"){
+        if( mins * lines > rowMins){
+          savedVals[ePersist.showWork] = "";
+          cells[eTbl.monCost].textContent = "0.00";
+          if (tryAddon("m", cells, rowMins, mins * lines)){
+            fmlyPlanDesc += savedVals[ePersist.showWork];
+            FmlyPlnCst += parseFloat(cells[eTbl.monCost].textContent);
+          }else{
+            row.style.display = "none";
+            return;
+          }
+        }
+      }else if(mins > rowMins){
+        // mins not shared
+        savedVals[ePersist.showWork] = "";
+        cells[eTbl.monCost].textContent = "0.00";
+        if (tryAddon("m", cells, rowMins, mins, lines)){
+          fmlyPlanDesc += savedVals[ePersist.showWork];
+          FmlyPlnCst += parseFloat(cells[eTbl.monCost].textContent);
+        }else{
           row.style.display = "none";
           return;
         }
-        if (FmlyPlns[rowPlanID][linesFound][eFmlyPln.DataShared] =="1" && mb * lines > rowMB){
+      }
+      if (FmlyPlns[rowPlanID][linesFound][eFmlyPln.TxtsShared] == "1") { if (texts * lines > rowTexts){
+          savedVals[ePersist.showWork] = "";
+          cells[eTbl.monCost].textContent = "0.00";
+          if (tryAddon("t", cells, rowTexts, texts * lines)){
+            fmlyPlanDesc += savedVals[ePersist.showWork];
+            FmlyPlnCst += parseFloat(cells[eTbl.monCost].textContent);
+          }else{
+            row.style.display = "none";
+            return;
+          }
+        }
+      }else if(texts > rowTexts){
+        savedVals[ePersist.showWork] = "";
+        cells[eTbl.monCost].textContent = "0.00";
+        if (tryAddon("t", cells, rowTexts, texts, lines)){
+          fmlyPlanDesc += savedVals[ePersist.showWork];
+          FmlyPlnCst += parseFloat(cells[eTbl.monCost].textContent);
+        }else{
+          row.style.display = "none";
+          return;
+        }
+      }
+      if (FmlyPlns[rowPlanID][linesFound][eFmlyPln.DataShared] =="1") {
+        if(mb * lines > rowMB){
+          savedVals[ePersist.showWork] = "";
+          cells[eTbl.monCost].textContent = "0.00";
+          if (tryAddon("d", cells, rowMB, mb * lines)){
+            fmlyPlanDesc += savedVals[ePersist.showWork];
+            FmlyPlnCst += parseFloat(cells[eTbl.monCost].textContent);
+          }else{
+            row.style.display = "none";
+            return;
+          }
+        }
+      }else if(mb > rowMB){
+        // data not shared
+        savedVals[ePersist.showWork] = "";
+        cells[eTbl.monCost].textContent = "0.00";
+        if (tryAddon("d", cells, rowMB, mb , lines)){
+          fmlyPlanDesc += savedVals[ePersist.showWork];
+          FmlyPlnCst += parseFloat(cells[eTbl.monCost].textContent);
+        }else{
           row.style.display = "none";
           return;
         }
@@ -308,23 +449,38 @@
     }else{
       // no family plans use single line cost * lines
       FmlyPlnCst = calcedCost * lines;
+      fmlyPlanDesc = " times " + lines + " lines";
+      needsTotal = true;
     }
+
     colPerMo.textContent = FmlyPlnCst.toFixed(2);
+    if(prependAddon){
+      monCstDesc += addonDesc + fmlyPlanDesc;
+    }else{
+      monCstDesc += fmlyPlanDesc;
+    }
+    if(needsTotal){
+      monCstDesc += " = $" + colPerMo.textContent;
+    }
+    return monCstDesc;
   }
 
-function tryAddon(type, cells, have, need){
-    var ary, $addonType;
+function tryAddon(type, cells, have, need, lines=1){
+    var ary, addonType, addonLabel;
   if(type == "d") {
       ary = DataAddons;
       addonType = "Data";
+      addonLabel = 'data addon';
       amtKey = eTbl.data;
     }else if(type == "m"){
       ary = MinsAddons;
       addonType = "Mins";
+      addonLabel = 'voice addon';
       amtKey = eTbl.mins;
     }else if (type == "t") {
       ary = TxtsAddons;
       addonType = "Txts";
+      addonLabel = 'text addon';
       amtKey = eTbl.txts;
     }
     //check for addon
@@ -332,11 +488,12 @@ function tryAddon(type, cells, have, need){
     var keepLooking = true;
     var rowFound = false; //Addons found?
     var isOK = false; //Found addon meets need?
-    var k=1, totAddOnCost = 0;
+    var k=1;
     var addOns = 0;
     var sID = cells[eTbl.ID].textContent;
     var sKey = sID +k;
     var AddOnValidity, AddonAmt, AddonCost, dataNeeded, numMonths, costPerMo;
+    
     while(ary[sKey] !== undefined && !isOK){
       AddOnValidity = ary[sKey][eAddon.Validity];
       if (AddOnValidity == "D" || AddOnValidity == "W"){
@@ -348,6 +505,7 @@ function tryAddon(type, cells, have, need){
       costPerMo = parseFloat(cells[eTbl.monCost].textContent);
       if(AddonAmt + have >= need) {
         if (AddOnValidity == "0") {
+          // 0 == roll over
           dataNeeded = need - have;
           have = need;
           numMonths = AddonAmt / dataNeeded;
@@ -355,8 +513,8 @@ function tryAddon(type, cells, have, need){
         } else {
           have += AddonAmt;
         }
-        costPerMo += AddonCost;
-        Persist[sID][0][ePersist.showWork] += "+$"+AddonCost.toFixed(2)+"^"+type;
+        costPerMo += (AddonCost * lines);
+        //Persist[sID][0][ePersist.showWork] += "+$"+AddonCost.toFixed(2)+"^"+type;
         isOK= true;
       }
       k +=1;
@@ -365,6 +523,7 @@ function tryAddon(type, cells, have, need){
     if (!rowFound){
       return isOK;
     }
+    var addonCount = 0;
     while(!isOK){
       if (AddonAmt == 0){
         //prevent infinte loop;
@@ -372,11 +531,14 @@ function tryAddon(type, cells, have, need){
         return true;
       }
       have += AddonAmt;
-      costPerMo += AddonCost;
-      totAddOnCost += AddonCost;
+      costPerMo += (AddonCost * lines);
       if (have >= need){
         isOK = true;
       }
+      addonCount++;
+    }
+    if(addonCount == 0){
+      addonCount = 1;
     }
     if (isOK) {
       cells[eTbl.monCost].textContent = costPerMo.toFixed(2);
@@ -391,7 +553,20 @@ function tryAddon(type, cells, have, need){
         cells[amtKey].textContent = have.toFixed();
       }
       cells[eTbl.plan].textContent += " + " + addonType + " Addon";
-      Persist[sID][0][ePersist.showWork] += "+$"+totAddOnCost.toFixed(2)+"^"+type;
+      sAddonCout = "";
+      if(lines > 1){
+        addonCount *= lines;
+      }
+
+      if (addonCount > 2){
+        sAddonCout = addonCount;
+      }
+        
+
+      Persist[sID][0][ePersist.showWork] += " + " + sAddonCout + " $"+AddonCost.toFixed(2) + " " + addonLabel;
+      if (addonCount > 1) {
+        Persist[sID][0][ePersist.showWork] += "s";
+      }
     }
     return isOK;
   }
@@ -521,13 +696,16 @@ function tryAddon(type, cells, have, need){
     Persist[id][0][ePersist.showWork] = '';
     cells[eTbl.data].textContent = data;
   }
+  /*
   function expandWork(showWork){
-    showWork = showWork.replace('+', '+ ');
-    showWork = showWork.replace('^d', ' Data Addon');
-    showWork = showWork.replace('^m', ' Voice Addon');
-    showWork = showWork.replace('^t', ' Messaging Addon');
+    showWork = showWork.replaceAll('+', ' + ');
+    showWork = showWork.replaceAll('^d', ' data addon');
+    showWork = showWork.replaceAll('^m', ' voice addon');
+    showWork = showWork.replaceAll('^t', ' messaging addon');
+    showWork = showWork.replaceAll('^x', ' per line times ');
     return showWork;
   }
+  */
   function scrollToTop(table){
     var row;
     for (var i = 0; i < table.rows.length; i++) {
@@ -653,9 +831,10 @@ function addRowHandlers() {
           var savedVals = Persist[cells[eTbl.ID].innerHTML][0];
           var OprMetaRow = OprMeta[savedVals[ePersist.oprID]];
           moBrand.innerHTML = cells[eTbl.oper].innerHTML;
-          
           var sPlan = cells[eTbl.plan].innerHTML;
           var nPlusPos = sPlan.indexOf("+");
+          var lines = parseInt(document.getElementById("lines").value,10);
+
           if (nPlusPos > 0){
             sPlan = sPlan.replace("+", "Plan +");
           }else{
@@ -693,16 +872,13 @@ function addRowHandlers() {
             moAutopay.innerHTML += "<b>Autopay Discount: </b>$" + nAutoPay.toFixed(2);
           }
           if (savedVals[ePersist.showWork]){
-            calcCost= expandWork(savedVals[ePersist.showWork])+" + plan cost = ";
+            calcCost += savedVals[ePersist.showWork];
+          } else {
+            calcCost = "$" + cells[eTbl.monCost].innerHTML;
           }
-          moMonCost.innerText = calcCost + cells[eTbl.monCost].innerHTML;
           nTaxes = parseInt(OprMetaRow[eOprMeta.Taxes]);
-          if (nTaxes) {moMonCost.innerText += " + taxes";}
-          nLineFee = parseFloat(savedVals[ePersist.lineFee]);
-          if (nLineFee) {
-            moCost.innerText += " + " + nLineFee + ' line fee';
-          }
-          
+          if (nTaxes) {calcCost += " + taxes";}
+          moMonCost.innerText = calcCost;
           switch (nTaxes){
             case 1: sTaxes = "Point of sale taxes"; break;
             case 2: sTaxes = "Point of sale and telecom taxes"; break;
