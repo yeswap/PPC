@@ -37,6 +37,7 @@ $feed->set_feed_url(array(
 	'http://cricketwireless.mediaroom.com/news-releases?pagetemplate=rss',
 	'https://www.tmonews.com/tag/prepaid/feed/',
 	'https://www.tmonews.com/tag/metropcs/feed/',
+	'https://bestcellular.com/feed/',
 	'http://blog.freedompop.com/feed/',
 	'https://www.blog.google/products/project-fi/rss',
 	'https://bgr.com/tag/metropcs/feed/',
@@ -78,7 +79,7 @@ foreach ($feed->get_items() as $item) {
 	  "content"=>$content);
   }
 }
-//Get user entered items from newsitems tabe
+//Get user entered items from newsitems table
 $connection = new mysqli('db151c.pair.com', 'yeswap_3', 'odfft2v02cc0', 'yeswap_ppcompare');
 
 if ($connection->connect_errno > 0) {
@@ -181,7 +182,7 @@ ob_start();
 <meta property="og:url" content="https://prepaidcompare.net" />
 <meta property="og:site_name" content="PrepaidCompare" />
 <meta property="og:image" content="https://prepaidcompare.net/apple-icon.png" />
-<meta name="Googlebot-News" content="noindex, nofollow">
+
 <script type="application/ld+json">
 [
 {
@@ -510,7 +511,7 @@ ul.menu {
 }
 
 ul.menu li {
-  display: inline;
+  display: inline-block;
   margin: 0;
 }
 
@@ -556,6 +557,24 @@ ul.menu li.current_page_item a, ul.menu li.current_page_item a:hover {
   background-image: none;
   background-repeat: repeat;
   background-attachment: scroll;
+}
+
+#menu-container nav{
+  height:auto;
+  width:auto;
+  float:left;
+}
+#socialicons img{
+  height:25px;
+  width:auto;
+}
+#socialicons a{
+  position: relative;
+  top: -15%;
+}
+#socialicons {
+  float:right;
+  height: 25px;
 }
 
 /* media queries for progressive enhancement */
@@ -652,15 +671,21 @@ ul.menu li.current_page_item a, ul.menu li.current_page_item a:hover {
     </div>
     <div class="separator"></div>
     </div><!-- #branding -->
-    <nav>
-      <ul class="menu">
-        <li class="current_page_item"><a href="/">Home</a></li>
-        <li class="page_item"><a href="/profiles/" title="Operator Profiles">Operators</a></li>
-        <li class="page_item"><a href="/about.html">About</a></li>
-        <li class="page_item"><a href="/privacy.html" title="Privacy Policy">Privacy</a></li>
-        <li class="page_item"><a href="/help.html">Help</a></li>
-      </ul>
-    </nav>
+    <div id="menu-container">
+      <nav>
+        <ul class="menu">
+          <li class="current_page_item"><a href="/">Home</a></li>
+          <li class="page_item"><a href="/profiles/" title="Operator Profiles">Operators</a></li>
+          <li class="page_item"><a href="/about.html">About</a></li>
+          <li class="page_item"><a href="/privacy.html" title="Privacy Policy">Privacy</a></li>
+          <li class="page_item"><a href="/help.html">Help</a></li>
+        </ul>
+      </nav>
+      <div id="socialicons">
+        <a target="_blank" title="Twitter" href="https://www.twitter.com/yeswap"><img alt="twitter" src="twit.png" border=0></a>
+        <a target="_blank" title="Facebook" href="https://www.facebook.com/PrepaidCompare"><img alt="Facebook" src="fb.png" border=0></a>
+      </div>
+    </div>
       <!-- The Modal -->
       <div id="myModal" class="modal">
       
@@ -673,7 +698,7 @@ ul.menu li.current_page_item a, ul.menu li.current_page_item a:hover {
           <div><span class="moItem" >Network:</span> <span id="moNetw"></span></div>
           <div><span id ="moCostLbl" class="moItem"></span><span id="moCost"></span>
           per <span id="moCostTyp"></span></div>
-          <div><span class="moItem">Calculated Cost:</span> <span id="moMonCost"></span></div>
+          <div><span class="moItem">Calculated Monthly Cost:</span> <span id="moMonCost"></span></div>
           <div><span class="moItem">Taxes Collected:</span> <span id="moTaxes"></span></div>
           <div id = "moAutopay"></div>
           <div id="moFmlyPlns"></div>

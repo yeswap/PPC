@@ -51,6 +51,11 @@ ob_start();
           <option value="3">3</option>
           <option value="4">4</option>
           <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
         </select>
       </p>
 
@@ -85,6 +90,7 @@ error_reporting(E_ALL);
           while ($row = $result->fetch_array()) {
             $FmlyPlnAry[$row["PlanID"]][$row["NumLines"]]=array( $row["Price"],
               $row["MinutesShared"],
+              $row["TxtsShared"],
               $row["DataShared"]
               );
           }
@@ -395,6 +401,7 @@ error_reporting(E_ALL);
       $tempAry[]=$row['VoiceRoaming'];
       $tempAry[]=$row['DataRoaming'];
       $tempAry[]=$row['AutopayDiscount'];
+      $tempAry[]=''; // ShowWork
       $rowMeta[$PlanID][]=$tempAry;
       }
       echo '</table>'."\n";  // Close the container
