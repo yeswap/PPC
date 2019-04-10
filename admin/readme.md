@@ -1,1 +1,1 @@
-a private sub-directory containing tools for managing the site 
+A private sub-directory containing tools to manage the site
