@@ -682,8 +682,8 @@ ul.menu li.current_page_item a, ul.menu li.current_page_item a:hover {
         </ul>
       </nav>
       <div id="socialicons">
-        <a target="_blank" title="Twitter" href="https://www.twitter.com/yeswap"><img alt="twitter" src="twit.png" border=0></a>
-        <a target="_blank" title="Facebook" href="https://www.facebook.com/PrepaidCompare"><img alt="Facebook" src="fb.png" border=0></a>
+        <a target="_blank" title="Twitter" rel="noopener" href="https://www.twitter.com/yeswap"><img alt="twitter" src="twit.png" border=0></a>
+        <a target="_blank" title="Facebook" rel="noopener" href="https://www.facebook.com/PrepaidCompare"><img alt="Facebook" src="fb.png" border=0></a>
       </div>
     </div>
       <!-- The Modal -->

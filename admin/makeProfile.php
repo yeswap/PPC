@@ -105,6 +105,7 @@
         $validity = " valid for 90 days";
         break;
       case "0":
+      case "-1":
         $validity = " doesn't expire";
         break;
       default:
@@ -428,8 +429,8 @@ table, caption, tbody, tfoot, thead, tr, th, td {
  </ul>
 </nav>
   <div id="socialicons">
-    <a target="_blank" title="Twitter" href="https://www.twitter.com/yeswap"><img alt="twitter" src="twit.png" border="0"></a>
-    <a targt="_blank" title="Facebook" href="https://www.facebook.com/ PrepaidCompare"><img alt="Facebook" src="fb.png" border="0"></a>
+    <a target="_blank" title="Twitter" rel="noopener" href="https://www.twitter.com/yeswap"><img alt="twitter" src="twit.png" border="0"></a>
+    <a targt="_blank" title="Facebook" rel="noopener" href="https://www.facebook.com/ PrepaidCompare"><img alt="Facebook" src="fb.png" border="0"></a>
   </div>
   <div class="separator"></div>
 </div>
