@@ -609,12 +609,13 @@ ul.menu li.current_page_item a, ul.menu li.current_page_item a:hover {
     padding-right:.5em;
   }
   #branding{
-    margin-bottom: .5em;
     position:fixed;
     top: 0;
     width:100%;
     background:white;
     overflow:hidden;
+    /* make scocial icons hide behond branding when scrolled */
+    z-index:1;
   }
   #branding + * {
     margin-top: 35px;
