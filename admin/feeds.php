@@ -72,7 +72,7 @@ $feed->handle_content_type();
 	}
 	html{
 	  width:100%;
-	  background-color: #E0DED7;
+	  background-color: gray;
 	  padding:0;
 	  margin:0;
 	}
