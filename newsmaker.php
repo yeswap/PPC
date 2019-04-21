@@ -37,7 +37,6 @@ $feed->set_feed_url(array(
 	'http://cricketwireless.mediaroom.com/news-releases?pagetemplate=rss',
 	'https://www.tmonews.com/tag/prepaid/feed/',
 	'https://www.tmonews.com/tag/metropcs/feed/',
-	'https://bestcellular.com/feed/',
 	'http://blog.freedompop.com/feed/',
 	'https://www.blog.google/products/project-fi/rss',
 	'https://bgr.com/tag/metropcs/feed/',
