@@ -508,7 +508,7 @@ table, caption, tbody, tfoot, thead, tr, th, td {
       echo "<ul id='planlist'>";
       while ($row = $result->fetch_array()) {
         echo "<li><b><i>".$row["Name"]."</i></b><br/>";
-        echo "<b>Cost:</b> ".$row["Cost"];
+        echo "<b>Cost:</b> $".stripZeros($row["Cost"]);
         switch ($row['CostType']) {
            case "M":
              $costType = " per month";
@@ -540,7 +540,13 @@ table, caption, tbody, tfoot, thead, tr, th, td {
           default:
             $costType = "";
         }
-        echo $costType.". ";
+        echo $costType;
+    
+        if ($row['LineFee'] != 0){
+          $monCost = $row["Cost"] + $row['LineFee'];
+          echo " + $".stripZeros($row['LineFee']) . " line fee = $".stripZeros($monCost);
+        }
+        echo ".";
         if ($row['AutopayDiscount']!=0){
           echo "<b>Auto Pay Discount:</b> ".$row['AutopayDiscount'].".";
         }
