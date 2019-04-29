@@ -10,7 +10,7 @@
     var eFmlyPln = {Cost:0, MinsShared:1, TxtsShared:2, DataShared:3};
     
     //temporary globals until plan? and request? objects are implemented
-    var row, Persist, rowMins, rowMB, rowTexts;
+    var row, Persist, rowMins, rowMB, rowTexts, colPerMo;
     
     //From https://stackoverflow.com/questions/1144783/how-to-replace-all-occurrences-of-a-string-in-javascript
     String.prototype.replaceAll = function(search, replacement) {
@@ -73,7 +73,10 @@
       
       //new vars 3/21/19
       var colNetwork, rowNetwork, colPlanID, rowPlanID, planLines, thisMB;
-      var colMins, colTexts, colMB, iVal, colCost;
+      var colMins, colTexts, colMB, iVal, colCost, Cost, colCostPeriod;
+      var colPlan, costPerMo, colIsPayGo, isPayGo, CostPeriod, dataOK;
+      var minsOK, txtsOK, nLineFee, calcedCost, tmpCost;
+      
       
       if (document.getElementById("ATTyes").checked){
         aryNetworks.push("ATT");
@@ -218,6 +221,7 @@
           costPerMo = Cost;
           monCstDesc = "$" + Cost;
         }
+        nLineFee = parseFloat(savedVals[ePersist.lineFee]);
         colPlan = row.cells[eTbl.plan];
         colPerMo = row.cells[eTbl.monCost];
         colIsPayGo = row.cells[eTbl.isPayGo];
@@ -225,8 +229,9 @@
         if (payGoCost && (isPayGo === "1")) {
           if (payGoCost > costPerMo) {
             costPerMo = payGoCost;
-            colPerMo.textContent = payGoCost.toFixed(2);
-            monCstDesc = "$" + colPerMo.textContent + " PayGo cost";
+            tmpCost = costPerMo + nLineFee;
+            colPerMo.textContent = tmpCost.toFixed(2);
+            monCstDesc = "$" + payGoCost.toFixed(2) + " PayGo cost";
           }else{
             colPerMo.textContent = costPerMo.toFixed(2);
             monCstDesc = "$" + colPerMo.textContent + " minimum monthly cost";
@@ -256,8 +261,6 @@
         }
         if(dataOK && minsOK && txtsOK) {
           costPerMo = parseFloat(row.cells[eTbl.monCost].textContent);
-          nLineFee = parseFloat(savedVals[ePersist.lineFee]);
-          costPerMo += nLineFee;
           row.style.display = "table-row";
           if(rowMB < 3 && isPayGo === "0" && payGoCost){
             // ProjectFi and other non PayGo with per MB data
@@ -283,7 +286,7 @@
           }
         }
 
-        if (lines > 1 && planLines == 0){
+        if (lines > 1 && planLines === 0){
           monCstDesc = CalcFmylPlans (row.cells, lines, payGoCost, mb, mins, texts, monCstDesc);
           savedVals[ePersist.showWork] = monCstDesc;
         }else if (savedVals[ePersist.showWork]) {
@@ -300,11 +303,11 @@
     loader.style.display = "none";
   }
   function CalcFmylPlans (cells, lines, payGoCost, mb, mins, texts, monCstDesc){
-    var calcedCost = parseFloat(colPerMo.textContent), i, j;
-    var FmlyPlnCst, bigPart, secondPart, testCost, linesFound = 0, bigCost, smallCost, tmpShowWork, needsTotal = false, fmlyPlanDesc;
-    var rowPlanID = parseInt(cells[eTbl.ID].textContent,10);
-    var savedVals = Persist[rowPlanID][0];
-    var addonDesc = savedVals[ePersist.showWork];
+    var calcedCost = parseFloat(colPerMo.textContent), i, j, splitCost;
+    var FmlyPlnCst, bigPart, secondPart, testCost, linesFound = 0;
+    var rowPlanID = parseInt(cells[eTbl.ID].textContent,10), bigCost, smallCost;
+    var savedVals = Persist[rowPlanID][0], tmpShowWork, needsTotal = false;
+    var addonDesc = savedVals[ePersist.showWork], fmlyPlanDesc;
     var prependAddon = true;
 
     //Are there any family plans?
@@ -375,7 +378,10 @@
       if (payGoCost){
         FmlyPlnCst += payGoCost * lines;
       }
+    }
+    if(linesFound){
       //Family plan(s) found. Do we need any addons?
+      console.log (rowPlanID);
       if (FmlyPlns[rowPlanID][linesFound][eFmlyPln.MinsShared] == "1"){
         if( mins * lines > rowMins){
           savedVals[ePersist.showWork] = "";
@@ -466,7 +472,7 @@
   }
 
 function tryAddon(type, cells, have, need, lines=1){
-    var ary, addonType, addonLabel;
+    var ary, addonType, addonLabel, amtKey, sAddonCout;
   if(type == "d") {
       ary = DataAddons;
       addonType = "Data";
@@ -525,7 +531,7 @@ function tryAddon(type, cells, have, need, lines=1){
     }
     var addonCount = 0;
     while(!isOK){
-      if (AddonAmt == 0){
+      if (AddonAmt === 0){
         //prevent infinte loop;
         console.log('illegal Addon Amount = zero. PlanID='+sID+', AddonCost='+AddonCost);
         return true;
@@ -537,7 +543,7 @@ function tryAddon(type, cells, have, need, lines=1){
       }
       addonCount++;
     }
-    if(addonCount == 0){
+    if(addonCount === 0){
       addonCount = 1;
     }
     if (isOK) {
@@ -661,7 +667,7 @@ function tryAddon(type, cells, have, need, lines=1){
   }
     
   function reset(cells){
-    var id = cells[eTbl.ID].textContent;
+    var id = cells[eTbl.ID].textContent, iVal, data;
     var savedVals = Persist[id][0];
     cells[eTbl.monCost].textContent = savedVals[ePersist.monCost];
     cells[eTbl.plan].textContent = savedVals[ePersist.plan];
@@ -731,8 +737,8 @@ function tryAddon(type, cells, have, need, lines=1){
 // Fast sortTable funtion by Rob Wu shared on https://stackoverflow.com/questions/7558182/
 function sortTable(tableId){
     var tbl = document.getElementById(tableId).tBodies[0];
-    var store = [];
-    for(var i=0, len=tbl.rows.length; i<len; i++){
+    var store = [], i, len;
+    for(i=0, len=tbl.rows.length; i<len; i++){
         var row = tbl.rows[i];
         var sortnr = parseFloat(row.cells[0].textContent || row.cells[0].innerText);
         if(!isNaN(sortnr)) store.push([sortnr, row]);
@@ -740,7 +746,7 @@ function sortTable(tableId){
     store.sort(function(x,y){
         return x[0] - y[0];
     });
-    for(var i=0, len=store.length; i<len; i++){
+    for(i=0, len=store.length; i<len; i++){
         tbl.appendChild(store[i][1]);
     }
     store = null;
@@ -771,6 +777,7 @@ var moRoaming = document.getElementById('moRoaming');
 var moIosMms = document.getElementById('moIosMms');
 var moProfile = document.getElementById('moProfile');
 var moFmlyPlns = document.getElementById('moFmlyPlns');
+var moAutopay = document.getElementById('moAutopay');
 
 // Get the <span> element that closes the modal
 var span = document.getElementsByClassName("close")[0];
@@ -945,7 +952,7 @@ function addRowHandlers() {
           var nTextRoaming = savedVals[ePersist.TextRoaming];
           var nDataRoaming = savedVals[ePersist.DataRoaming];
           if(nVoiceRoaming || nTextRoaming || nDataRoaming){
-            if (nVoiceRoaming == 0){
+            if (nVoiceRoaming === 0){
                 moRoaming.innerText = "mins: none, ";
             }else if (nVoiceRoaming == -1){
               moRoaming.innerText = "mins: " + cells[eTbl.mins].innerHTML +', ';
@@ -954,7 +961,7 @@ function addRowHandlers() {
             }else if (nVoiceRoaming <1){
               moRoaming.innerText = "mins: " + nVoiceRoaming.toFixed(2) +"¢/ea, ";
             }
-            if (nTextRoaming == 0){
+            if (nTextRoaming === 0){
               moRoaming.innerText += "txts: none, ";
             }else if (nTextRoaming == -1){
               moRoaming.innerText += "txts: " + cells[eTbl.txts].innerHTML +', ';
@@ -963,7 +970,7 @@ function addRowHandlers() {
             }else if (nTextRoaming <1){
               moRoaming.innerText += "txts: " + nTextRoaming.toFixed(2) * 100 +"¢/ea, ";
             }
-            if (nDataRoaming == 0){
+            if (nDataRoaming === 0){
                moRoaming.innerText += "data: none";
             }else if (nDataRoaming == -1){
               moRoaming.innerText += "data: " + cells[eTbl.data].innerHTML;
