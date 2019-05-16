@@ -3,9 +3,11 @@
    this.querySelector("thead").style.transform = translate;
   });
 // globals
-    var eTbl = {"monCost": 0,"oper":1, "netw":2,"cost":3,"costTyp":4,"mins":5,"txts":6,"data":7,"throtld":8,"ID":9,"isPayGo":10,"HasRollover":11,"MMS":12,"plan":13}; //JavaScript "enum" for array row indexes
+    var eTbl = {"monCost": 0,"oper":1, "netw":2,"mins":3,"txts":4,"data":5,"ID":6}; //JavaScript "enum" for array row indexes
     
-    var ePersist = {monCost:0,plan:1,cost:2,mins:3,txts:4,data:5,lineFee:6, multiLine:7, notes:8, oprID:9, AllowsHotspot:10, Hotspot_HS_Limit:11, Hotspot_HS_Throttle:12, HotspotThrottle:13, TextRoaming:14, VoiceRoaming:15, DataRoaming:16, AutopayDiscount:17, showWork:18};
+    var ePersist = {monCost:0,mins:1,txts:2,data:3};
+    
+    var eRow = {plan:0,cost:1,costType:2,overageThrottle:3, isPayGo:4, HasRollover:5, LineFee:6, multiLine:7, notes:8, oprID:9, AllowsHotspot:10, Hotspot_HS_Limit:11, Hotspot_HS_Throttle:12, HotspotThrottle:13, TextRoaming:14, VoiceRoaming:15, DataRoaming:16, AutopayDiscount:17, MMS:18, showWork:19};
     
     var eFmlyPln = {Cost:0, MinsShared:1, TxtsShared:2, DataShared:3};
     
@@ -75,7 +77,7 @@
       var colNetwork, rowNetwork, colPlanID, rowPlanID, planLines, thisMB;
       var colMins, colTexts, colMB, iVal, colCost, Cost, colCostPeriod;
       var colPlan, costPerMo, colIsPayGo, isPayGo, CostPeriod, dataOK;
-      var minsOK, txtsOK, nLineFee, calcedCost, tmpCost;
+      var minsOK, txtsOK, nLineFee, calcedCost, tmpCost, rowMeta;
       
       
       if (document.getElementById("ATTyes").checked){
@@ -96,11 +98,19 @@
       var needsunlimTrot = document.getElementById("unlimTrot").checked;
 
       // loop thru table calculating cost andhiding rows that don't meet needs
+    
       var table = document.getElementsByTagName('TABLE')[0];
       for (var i = 2; i < table.rows.length; i++) {
         row = table.rows[i];
         // restore modied rows
         reset(row.cells);
+        // get plan ID and init Persist array
+        colPlanID = row.cells[eTbl.ID];
+        rowPlanID = parseInt(colPlanID.textContent,10);
+        //console.log (rowPlanID);
+        savedVals = Persist[rowPlanID][0];
+        rowMeta = RowAry[rowPlanID][0];
+
         //Check if user has excluded this row's network
         colNetwork = row.cells[eTbl.netw];
         rowNetwork = colNetwork.textContent;
@@ -110,33 +120,29 @@
         }
         //If iOS MMS is required, hide rows that don't have it.
         if (needsIosMMS){
-          if (row.cells[eTbl.MMS].innerHTML === "0"){
+          if (rowMeta[eRow.MMS] === 0){
             row.style.display = "none";
             continue; // jump over this row
           }
         }
         //If unlimited throttled is required, hide rows that don't have it.
         if (needsunlimTrot){
-          if (row.cells[eTbl.throtld].textContent.indexOf('kbps') == -1){
+          if (rowMeta[eRow.overageThrottle] < 32){
             row.style.display = "none";
             continue; // jump over this row
           }
         }
-        // get plan ID and init Persist array
-        colPlanID = row.cells[eTbl.ID];
-        rowPlanID = parseInt(colPlanID.textContent,10);
-        savedVals = Persist[rowPlanID][0];
 
-        if (needsRoaming && !savedVals[ePersist.VoiceRoaming]){
+        if (needsRoaming && !rowMeta[eRow.VoiceRoaming]){
           row.style.display = "none";
           continue;
         }
-        if (needsHotspot && !savedVals[ePersist.AllowsHotspot]){
+        if (needsHotspot && !rowMeta[eRow.AllowsHotspot]){
           row.style.display = "none";
           continue;
         }
 
-        planLines = savedVals[ePersist.multiLine];
+        planLines = rowMeta[eRow.multiLine];
         thisMB = mb;
         if (planLines > 1 && lines != planLines){
           row.style.display = "none";
@@ -192,41 +198,41 @@
           payGoCost += thisMB * iVal;
           //monCstDesc += thisMB + " MB times " + rowMB + " ";
         }
-        colCost = row.cells[eTbl.cost];
-        Cost = parseFloat(colCost.textContent);
-        colCostPeriod = row.cells[eTbl.costTyp];
-        CostPeriod = colCostPeriod.textContent;
-        if (CostPeriod === '90 days') {
+        //colCost = row.cells[eTbl.cost];
+        Cost = parseFloat(rowMeta[eRow.cost]);
+        CostPeriod = rowMeta[eRow.costType];
+        //CostPeriod = colCostPeriod.textContent;
+        if (CostPeriod === 9) {
           costPerMo = Cost/3;
           monCstDesc = "$" + Cost + "/3 = $" + costPerMo.toFixed(2);
-        }else if (CostPeriod === '60 days ') {
+        }else if (CostPeriod === 6) {
           costPerMo = Cost/2;
           monCstDesc = "$" + Cost + "/2 = $" + costPerMo.toFixed(2);
-        }else if (CostPeriod === '120 days') {
+        }else if (CostPeriod === 4) {
           costPerMo = Cost/4;
           monCstDesc = "$" + Cost + "/4 = $" + costPerMo.toFixed(2);
-        }else if (CostPeriod === '180 days') {
+        }else if (CostPeriod === 'S') {
           costPerMo = Cost/6;
           monCstDesc = "$" + Cost + "/6 = $" + costPerMo.toFixed(2);
-        }else if (CostPeriod === 'year') {
+        }else if (CostPeriod === 'Y') {
           costPerMo = Cost/12;
           monCstDesc = "$" + Cost + "/12 = $" + costPerMo.toFixed(2);
-        }else if (CostPeriod === 'day') {
+        }else if (CostPeriod === 'D') {
           costPerMo = Cost * 30;
           monCstDesc = "$" + Cost + "times 30 = $" + costPerMo.toFixed(2);
-        }else if (CostPeriod === "doesn't expire") {
+        }else if (CostPeriod === 0) {
           costPerMo = 0;
           monCstDesc = "0";
         }else{
           costPerMo = Cost;
           monCstDesc = "$" + Cost;
         }
-        nLineFee = parseFloat(savedVals[ePersist.lineFee]);
-        colPlan = row.cells[eTbl.plan];
+        nLineFee = parseFloat(rowMeta[eRow.LineFee]);
+        colPlan = rowMeta[eRow.plan];
         colPerMo = row.cells[eTbl.monCost];
-        colIsPayGo = row.cells[eTbl.isPayGo];
-        isPayGo = colIsPayGo.textContent;
-        if (payGoCost && (isPayGo === "1")) {
+        //colIsPayGo = row.cells[eTbl.isPayGo];
+        isPayGo = rowMeta[eRow.isPayGo];
+        if (payGoCost && (isPayGo === 1)) {
           if (payGoCost > costPerMo) {
             costPerMo = payGoCost;
             tmpCost = costPerMo + nLineFee;
@@ -288,14 +294,14 @@
 
         if (lines > 1 && planLines === 0){
           monCstDesc = CalcFmylPlans (row.cells, lines, payGoCost, mb, mins, texts, monCstDesc);
-          savedVals[ePersist.showWork] = monCstDesc;
-        }else if (savedVals[ePersist.showWork]) {
-          savedVals[ePersist.showWork] = monCstDesc + savedVals[ePersist.showWork];
+          rowMeta[eRow.showWork] = monCstDesc;
+        }else if (rowMeta[eRow.showWork]) {
+          rowMeta[eRow.showWork] = monCstDesc + rowMeta[eRow.showWork];
         }else{
-          savedVals[ePersist.showWork] = monCstDesc;
+          rowMeta[eRow.showWork] = monCstDesc;
         }
         if (addonUsed && lines ==1) {
-          savedVals[ePersist.showWork] += " = " + colPerMo.textContent;
+          rowMeta[eRow.showWork] += " = " + colPerMo.textContent;
         }
        } // end for
     sortTable("planTbl");
@@ -307,7 +313,8 @@
     var FmlyPlnCst, bigPart, secondPart, testCost, linesFound = 0;
     var rowPlanID = parseInt(cells[eTbl.ID].textContent,10), bigCost, smallCost;
     var savedVals = Persist[rowPlanID][0], tmpShowWork, needsTotal = false;
-    var addonDesc = savedVals[ePersist.showWork], fmlyPlanDesc;
+    var rowMeta = RowAry[rowPlanID][0];
+    var addonDesc = rowMeta[eRow.showWork], fmlyPlanDesc;
     var prependAddon = true;
 
     //Are there any family plans?
@@ -319,7 +326,7 @@
         FmlyPlnCst = Number(FmlyPlns[rowPlanID][lines][eFmlyPln.Cost]);
         fmlyPlanDesc = "$" + FmlyPlnCst + " " + lines + " line plan";
         //savedVals[ePersist.showWork contains addons
-        if (savedVals[ePersist.showWork]){
+        if (rowMeta[eRow.showWork]){
           needsTotal = true;
         }
         monCstDesc = "";
@@ -381,13 +388,12 @@
     }
     if(linesFound){
       //Family plan(s) found. Do we need any addons?
-      console.log (rowPlanID);
       if (FmlyPlns[rowPlanID][linesFound][eFmlyPln.MinsShared] == "1"){
         if( mins * lines > rowMins){
-          savedVals[ePersist.showWork] = "";
+          rowMeta[eRow.showWork] = "";
           cells[eTbl.monCost].textContent = "0.00";
           if (tryAddon("m", cells, rowMins, mins * lines)){
-            fmlyPlanDesc += savedVals[ePersist.showWork];
+            fmlyPlanDesc += rowMeta[eRow.showWork];
             FmlyPlnCst += parseFloat(cells[eTbl.monCost].textContent);
           }else{
             row.style.display = "none";
@@ -396,10 +402,10 @@
         }
       }else if(mins > rowMins){
         // mins not shared
-        savedVals[ePersist.showWork] = "";
+        rowMeta[eRow.showWork] = "";
         cells[eTbl.monCost].textContent = "0.00";
         if (tryAddon("m", cells, rowMins, mins, lines)){
-          fmlyPlanDesc += savedVals[ePersist.showWork];
+          fmlyPlanDesc += rowMeta[eRow.showWork];
           FmlyPlnCst += parseFloat(cells[eTbl.monCost].textContent);
         }else{
           row.style.display = "none";
@@ -407,10 +413,10 @@
         }
       }
       if (FmlyPlns[rowPlanID][linesFound][eFmlyPln.TxtsShared] == "1") { if (texts * lines > rowTexts){
-          savedVals[ePersist.showWork] = "";
+          rowMeta[eRow.showWork] = "";
           cells[eTbl.monCost].textContent = "0.00";
           if (tryAddon("t", cells, rowTexts, texts * lines)){
-            fmlyPlanDesc += savedVals[ePersist.showWork];
+            fmlyPlanDesc += rowMeta[eRow.showWork];
             FmlyPlnCst += parseFloat(cells[eTbl.monCost].textContent);
           }else{
             row.style.display = "none";
@@ -418,10 +424,10 @@
           }
         }
       }else if(texts > rowTexts){
-        savedVals[ePersist.showWork] = "";
+        rowMeta[eRow.showWork] = "";
         cells[eTbl.monCost].textContent = "0.00";
         if (tryAddon("t", cells, rowTexts, texts, lines)){
-          fmlyPlanDesc += savedVals[ePersist.showWork];
+          fmlyPlanDesc += rowMeta[eRow.showWork];
           FmlyPlnCst += parseFloat(cells[eTbl.monCost].textContent);
         }else{
           row.style.display = "none";
@@ -430,10 +436,10 @@
       }
       if (FmlyPlns[rowPlanID][linesFound][eFmlyPln.DataShared] =="1") {
         if(mb * lines > rowMB){
-          savedVals[ePersist.showWork] = "";
+          rowMeta[eRow.showWork] = "";
           cells[eTbl.monCost].textContent = "0.00";
           if (tryAddon("d", cells, rowMB, mb * lines)){
-            fmlyPlanDesc += savedVals[ePersist.showWork];
+            fmlyPlanDesc += rowMeta[eRow.showWork];
             FmlyPlnCst += parseFloat(cells[eTbl.monCost].textContent);
           }else{
             row.style.display = "none";
@@ -442,10 +448,10 @@
         }
       }else if(mb > rowMB){
         // data not shared
-        savedVals[ePersist.showWork] = "";
+        rowMeta[eRow.showWork] = "";
         cells[eTbl.monCost].textContent = "0.00";
         if (tryAddon("d", cells, rowMB, mb , lines)){
-          fmlyPlanDesc += savedVals[ePersist.showWork];
+          fmlyPlanDesc += rowMeta[eRow.showWork];
           FmlyPlnCst += parseFloat(cells[eTbl.monCost].textContent);
         }else{
           row.style.display = "none";
@@ -558,7 +564,7 @@ function tryAddon(type, cells, have, need, lines=1){
       }else{
         cells[amtKey].textContent = have.toFixed();
       }
-      cells[eTbl.plan].textContent += " + " + addonType + " Addon";
+      Persist[sID][0][ePersist.plan] += " + " + addonType + " Addon";
       sAddonCout = "";
       if(lines > 1){
         addonCount *= lines;
@@ -569,9 +575,9 @@ function tryAddon(type, cells, have, need, lines=1){
       }
         
 
-      Persist[sID][0][ePersist.showWork] += " + " + sAddonCout + " $"+AddonCost.toFixed(2) + " " + addonLabel;
+      RowAry[sID][0][eRow.showWork] += " + " + sAddonCout + " $"+AddonCost.toFixed(2) + " " + addonLabel;
       if (addonCount > 1) {
-        Persist[sID][0][ePersist.showWork] += "s";
+        RowAry[sID][0][eRow.showWork] += "s";
       }
     }
     return isOK;
@@ -670,8 +676,6 @@ function tryAddon(type, cells, have, need, lines=1){
     var id = cells[eTbl.ID].textContent, iVal, data;
     var savedVals = Persist[id][0];
     cells[eTbl.monCost].textContent = savedVals[ePersist.monCost];
-    cells[eTbl.plan].textContent = savedVals[ePersist.plan];
-    cells[eTbl.cost].textContent = savedVals[ePersist.cost].toFixed(2);
     cells[eTbl.mins].textContent = savedVals[ePersist.mins];
     cells[eTbl.txts].textContent = savedVals[ePersist.txts];
     iVal = parseFloat(savedVals[ePersist.data]);
@@ -699,7 +703,7 @@ function tryAddon(type, cells, have, need, lines=1){
         iVal = iVal*100;
         data = +(iVal).toFixed(2) +'¢/MB';
     }
-    Persist[id][0][ePersist.showWork] = '';
+    RowAry[id][0][eRow.showWork] = '';
     cells[eTbl.data].textContent = data;
   }
   /*
@@ -830,15 +834,17 @@ function addRowHandlers() {
     var createClickHandler =
       function(row) {
         return function() {
-          var msg, sThrottled, sNetw, nTaxes, sTaxes;
+          var msg, nThrottled, sNetw, nTaxes, sTaxes;
           var fullURL, URLNoProtocol, sURL,retVal;
-          var calcCost='';
+          var calcCost='', CostPeriod;
           var cells = row.getElementsByTagName("td");
           var eOprMeta = {URL:0,Taxes:1,Notes:2,Suffix:3};
-          var savedVals = Persist[cells[eTbl.ID].innerHTML][0];
-          var OprMetaRow = OprMeta[savedVals[ePersist.oprID]];
+          var rowPlanID = cells[eTbl.ID].innerHTML;
+          var savedVals = Persist[rowPlanID][0];
+          var rowMeta = RowAry[rowPlanID][0];
+          var OprMetaRow = OprMeta[rowMeta[eRow.oprID]];
           moBrand.innerHTML = cells[eTbl.oper].innerHTML;
-          var sPlan = cells[eTbl.plan].innerHTML;
+          var sPlan = rowMeta[eRow.plan];
           var nPlusPos = sPlan.indexOf("+");
           var lines = parseInt(document.getElementById("lines").value,10);
 
@@ -870,16 +876,37 @@ function addRowHandlers() {
               moNetw.innerText = "Sprint + T-Mobile + US Cellular";
             break;
           }
-          moCostLbl.innerText = parseInt(cells[eTbl.isPayGo].innerHTML) ? "Minimum Topup: " : "Base Plan Cost: ";
-          moCost.innerText = cells[eTbl.cost].innerHTML;
-          moCostType.innerText = cells[eTbl.costTyp].innerHTML;
-          var nAutoPay = parseFloat(savedVals[ePersist.AutopayDiscount]);
+          moCostLbl.innerText = parseInt(rowMeta[eRow.isPayGo]) ? "Minimum Topup: " : "Base Plan Cost: ";
+          moCost.innerText = '$' + rowMeta[eRow.cost];
+          CostPeriod = rowMeta[eRow.costType];
+          if (CostPeriod === 9) {
+             moCostType.innerText = '90 days';
+          }else if (CostPeriod === 6) {
+            moCostType.innerText = '60 days';
+          }else if (CostPeriod === 4) {
+            moCostType.innerText = '120 days';
+          }else if (CostPeriod === 3) {
+            moCostType.innerText = '30 days';
+          }else if (CostPeriod === 'S') {
+            moCostType.innerText = '6 months';
+          }else if (CostPeriod === 'Y') {
+            moCostType.innerText = 'year';
+          }else if (CostPeriod === 'D') {
+            moCostType.innerText = 'day';
+          }else if (CostPeriod === 'M') {
+            moCostType.innerText = 'month';
+          }else if (CostPeriod === 0) {
+            moCostType.innerText = 'doesn\'t expire';
+          }else{
+            moCostType.innerText = CostPeriod;
+          }
+          var nAutoPay = parseFloat(rowMeta[eRow.AutopayDiscount]);
           moAutopay.innerHTML = "";
           if (nAutoPay){
             moAutopay.innerHTML += "<b>Autopay Discount: </b>$" + nAutoPay.toFixed(2);
           }
-          if (savedVals[ePersist.showWork]){
-            calcCost += savedVals[ePersist.showWork];
+          if (rowMeta[eRow.showWork]){
+            calcCost += rowMeta[eRow.showWork];
           } else {
             calcCost = "$" + cells[eTbl.monCost].innerHTML;
           }
@@ -895,40 +922,40 @@ function addRowHandlers() {
           moMins.innerText = cells[eTbl.mins].innerHTML;
           moTxts.innerText = cells[eTbl.txts].innerHTML;
           moData.innerText = cells[eTbl.data].innerHTML;
-          sThrottled = cells[eTbl.throtld].innerHTML;
-          switch (sThrottled) {
-            case "Hard capped":
+          nThrottled = rowMeta[eRow.overageThrottle];
+          switch (nThrottled) {
+            case -1:
               moThrotld.innerText = "No, hard capped";
               break;
-            case "N/A":
+            case 0:
               moThrotld.innerText = "N/A";
               break;
             default:
-              moThrotld.innerText = "yes at " + sThrottled;
+              moThrotld.innerText = "yes at " + nThrottled + " kbps";
           }
 
-          if (cells[eTbl.MMS].innerHTML === "0"){
-            moIosMms.innerText = 'No';
-          }else{
+          if (rowMeta[eRow.MMS] === 1){
             moIosMms.innerText = 'Yes';
+          }else{
+            moIosMms.innerText = 'No';
           }
 
-          if(savedVals[ePersist.AllowsHotspot]){
-            var Hotspot_HS_Limit = savedVals[ePersist.Hotspot_HS_Limit];
+          if(rowMeta[eRow.AllowsHotspot]){
+            var Hotspot_HS_Limit = rowMeta[eRow.Hotspot_HS_Limit];
             if (Hotspot_HS_Limit){
               if (Hotspot_HS_Limit == -1){
                 moHotspot.innerText = "unlimited";
               }else if (Hotspot_HS_Limit >= 1024){
                 moHotspot.innerText = Hotspot_HS_Limit / 1024 + " GB ";
               } else{
-                moHotspot.innerText = savedVals[ePersist.Hotspot_HS_Limit] + " MB ";
+                moHotspot.innerText = rowMeta[eRow.Hotspot_HS_Limit] + " MB ";
               }
             }else{
               moHotspot.innerText = cells[eTbl.data].innerHTML;
             }
-            if(savedVals[ePersist.Hotspot_HS_Throttle]){
-              if (savedVals[ePersist.Hotspot_HS_Throttle] >= 1024){
-                moHotspot.innerText += " at " + savedVals[ePersist.Hotspot_HS_Throttle]/1024 + "mbps";
+            if(rowMeta[eRow.Hotspot_HS_Throttle]){
+              if (rowMeta[eRow.Hotspot_HS_Throttle] >= 1024){
+                moHotspot.innerText += " at " + rowMeta[eRow.Hotspot_HS_Throttle]/1024 + "mbps";
               }else{
                 moHotspot.innerText += " at " + savedVals[ePersist.Hotspot_HS_Throttle] + "kbps";
               }
@@ -936,21 +963,21 @@ function addRowHandlers() {
               moHotspot.innerText += " at high speeds";
             }
             if(savedVals[ePersist.HotspotThrottle]){
-              if (savedVals[ePersist.HotspotThrottle >= 1024]){
-                moHotspot.innerText += " then unlimited at " + savedVals[ePersist.HotspotThrottle]/1024 + "mbps";
+              if (rowMeta[eRow.HotspotThrottle >= 1024]){
+                moHotspot.innerText += " then unlimited at " + rowMeta[eRow.HotspotThrottle]/1024 + "mbps";
               }else{
-                moHotspot.innerText += " then unlimited at " + savedVals[ePersist.HotspotThrottle] + "kbps";
+                moHotspot.innerText += " then unlimited at " + rowMeta[eRow.HotspotThrottle] + "kbps";
               }
             }
-            if(savedVals[ePersist.AllowsHotspot] > 1){
-              moHotspot.innerText += " for $" + savedVals[ePersist.AllowsHotspot] + "/mo";
+            if(rowMeta[eRow.AllowsHotspot] > 1){
+              moHotspot.innerText += " for $" + rowMeta[eRow.AllowsHotspot] + "/mo";
             }
           }else{
             moHotspot.innerText = "not supported";
           }
-          var nVoiceRoaming = savedVals[ePersist.VoiceRoaming];
-          var nTextRoaming = savedVals[ePersist.TextRoaming];
-          var nDataRoaming = savedVals[ePersist.DataRoaming];
+          var nVoiceRoaming = rowMeta[eRow.VoiceRoaming];
+          var nTextRoaming = rowMeta[eRow.TextRoaming];
+          var nDataRoaming = rowMeta[eRow.DataRoaming];
           if(nVoiceRoaming || nTextRoaming || nDataRoaming){
             if (nVoiceRoaming === 0){
                 moRoaming.innerText = "mins: none, ";
@@ -986,15 +1013,15 @@ function addRowHandlers() {
           }else{
             moRoaming.innerText = "none";
           }
-          moIsPayGo.innerText = parseInt(cells[eTbl.isPayGo].innerHTML) ? "yes" : "no";
-          moHasRollover.innerText = parseInt(cells[eTbl.HasRollover].innerHTML) ? "yes" : "no";
+          moIsPayGo.innerText = parseInt(rowMeta[eRow.isPayGo]) ? "yes" : "no";
+          moHasRollover.innerText = parseInt(rowMeta[eRow.HasRollover]) ? "yes" : "no";
           if (FmlyPlns[cells[eTbl.ID].innerHTML] !== undefined) {
             moFmlyPlns.innerHTML = "<b>Family Plans:</b> "
             + getFmlyPlns(cells[eTbl.ID].innerHTML);
           }else{
             moFmlyPlns.innerHTML = "";
           }
-          moNotes.innerHTML = savedVals[ePersist.notes];
+          moNotes.innerHTML = rowMeta[eRow.notes];
           if(moNotes.innerHTML){moNotes.innerHTML += " ";}
           if (OprMetaRow[eOprMeta.Notes]){
             moNotes.innerHTML += OprMetaRow[eOprMeta.Notes];
