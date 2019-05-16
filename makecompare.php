@@ -234,13 +234,15 @@ error_reporting(E_ALL);
       if($rows > 0) {
         echo '<table id ="planTbl" title="Click any row for more informaton about that plan">'."\n";
         echo "<thead>\n";
-        echo '<tr><th>Cost per Month</th><th>Brand</th><th>Net&shy;work</th><th class="optional">Price</th><th class="optional">Per</th><th>Mins</th><th>Txts</th><th>Data</th><th class="optional">Thrott&shy;led</th><th class="hidden">PlanID</th><th class="hidden">IsPayGo</th><th class="hidden">HasRollover</th><th class="hidden">MMS</th><th class="hidden">Plan</th></tr>'."\n";
-        echo '<tr><th colspan ="14" id="caption">Click any row below for more informaton</th></tr>'."\n";
+        echo '<tr><th>Cost per Month</th><th>Brand</th><th>Net&shy;work</th><th>Mins</th><th>Txts</th><th>Data</th></tr>'."\n";
+        echo '<tr><th colspan ="6" id="caption">Click any row below for more informaton</th></tr>'."\n";
         echo "</thead>\n";
-      $rowMeta=array(); //an array of data we want to persist when table changes
+      $rowPersist=array(); //an array of data we want to persist accross calc runs table changes
+      $rowMeta=array(); //array of plan data
       while ($row = $result->fetch_array()) {
         $PlanID = $row["PlanID"];
-        $tempAry=array();
+        $tempPersist=array();
+        $tempRow=array();
         //hide multiline plans initially
         if ($row["MultiLine"]){
           echo "<tr style='display:none'>";
@@ -248,7 +250,7 @@ error_reporting(E_ALL);
           echo '<tr>';  // Start a new row
         }
         echo '<td>'.$row['MonthlyCost'].'</td>';
-        $tempAry[]=$row['MonthlyCost'];
+        $tempPersist[]=$row['MonthlyCost'];
         echo '<td>'.$row['Operator'].'</td>';
         switch ($row['Network']){
           case "AT&T":
@@ -268,9 +270,10 @@ error_reporting(E_ALL);
             break;
         }
         echo '<td>'.$network.'</td>';
-        $tempAry[]=$row['Plan'];
-        echo '<td class="optional">'.$row['Cost'].'</td>';
-        $tempAry[]=$row['Cost'];
+        $tempRow[]=$row['Plan'];
+        $tempRow[]=$row['Cost'];
+        $tempRow[]=$row['CostType'];
+        /*
         switch ($row['CostType']) {
           case "M":
             $costType = "month";
@@ -303,6 +306,8 @@ error_reporting(E_ALL);
            $costType = "";
        }
       echo '<td class="optional">'.$costType.'</td>';
+      */
+      
       switch ($row['Minutes']) {
         case -1:
           $minutes = "Unlimited";
@@ -322,7 +327,7 @@ error_reporting(E_ALL);
            }
        }
       echo '<td>'.$minutes.'</td>';
-      $tempAry[]=$minutes;
+      $tempPersist[]=$minutes;
       switch ($row['Texts']) {
         case -1:
           $texts = "Unlimited";
@@ -341,7 +346,7 @@ error_reporting(E_ALL);
            }
        }
       echo '<td>'.$texts.'</td>';
-      $tempAry[]=$texts;
+      $tempPersist[]=$texts;
       switch (true) {
         case $row['Data'] == -1:
           $data = "Unlimited";
@@ -371,7 +376,8 @@ error_reporting(E_ALL);
            }
        }
       echo '<td>'.$data.'</td>';
-      $tempAry[]=$row['Data'];
+      $tempPersist[]=$row['Data'];
+      /*
       switch ($row['OverageThrottle']) {
         case -1:
           $throttle = "Hard capped";
@@ -382,31 +388,38 @@ error_reporting(E_ALL);
          default:
            $throttle = $row['OverageThrottle'].' kbps';
        }
-      echo '<td class="optional">'.$throttle.'</td>';
+      */
+      $tempRow[]=$row['OverageThrottle'];
+      //echo '<td class="optional">'.$throttle.'</td>';
       echo '<td class="hidden">'.$row['PlanID'].'</td>';
-      echo '<td class="hidden">'.$row['isPayGo'].'</td>';
-      echo '<td class="hidden">'.$row['HasRollover'].'</td>';
-      echo '<td class="hidden">'.$row['MMS'].'</td>';
-      echo '<td class="hidden">'.$row['Plan'].'</td>';
+      //echo '<td class="hidden">'.$row['isPayGo'].'</td>';
+      //echo '<td class="hidden">'.$row['HasRollover'].'</td>';
+      //echo '<td class="hidden">'.$row['MMS'].'</td>';
+      //echo '<td class="hidden">'.$row['Plan'].'</td>';
       echo '</tr>'."\n";   //  Close the row
-      $tempAry[]=$row['LineFee'];
-      $tempAry[]=$row['MultiLine'];
-      $tempAry[]=$row['Notes'];
-      $tempAry[]=$row['OperatorID'];
-      $tempAry[]=$row['AllowsHotspot'];
-      $tempAry[]=$row['Hotspot_HS_Limit'];
-      $tempAry[]=$row['Hotspot_HS_Throttle'];
-      $tempAry[]=$row['HotspotThrottle'];
-      $tempAry[]=$row['TextRoaming'];
-      $tempAry[]=$row['VoiceRoaming'];
-      $tempAry[]=$row['DataRoaming'];
-      $tempAry[]=$row['AutopayDiscount'];
-      $tempAry[]=''; // ShowWork
-      $rowMeta[$PlanID][]=$tempAry;
+      $tempRow[]=$row['isPayGo'];
+      $tempRow[]=$row['HasRollover'];
+      $tempRow[]=$row['LineFee'];
+      $tempRow[]=$row['MultiLine'];
+      $tempRow[]=$row['Notes'];
+      $tempRow[]=$row['OperatorID'];
+      $tempRow[]=$row['AllowsHotspot'];
+      $tempRow[]=$row['Hotspot_HS_Limit'];
+      $tempRow[]=$row['Hotspot_HS_Throttle'];
+      $tempRow[]=$row['HotspotThrottle'];
+      $tempRow[]=$row['TextRoaming'];
+      $tempRow[]=$row['VoiceRoaming'];
+      $tempRow[]=$row['DataRoaming'];
+      $tempRow[]=$row['AutopayDiscount'];
+      $tempRow[]=$row['MMS']; //iosMMS support
+      $tempRow[]=''; // ShowWork
+      $rowMeta[$PlanID][]=$tempRow;
+      $rowPersist[$PlanID][]=$tempPersist;
       }
       echo '</table>'."\n";  // Close the container
       echo '</div>'."\n";  // end div id wrap
       $JSON3 = json_encode($rowMeta, JSON_NUMERIC_CHECK);
+      $JSON4 = json_encode($rowPersist, JSON_NUMERIC_CHECK);
     }
     $FmlyPlnAry = buildFamilyPlanObject($connection);
     $JSON = json_encode($FmlyPlnAry);
@@ -423,7 +436,8 @@ error_reporting(E_ALL);
   <script>
     var FmlyPlns = <?= $JSON ?>;
     var DataAddons = <?= $JSON2 ?>;
-    var Persist = <?= $JSON3 ?>;
+    var RowAry =  <?= $JSON3 ?>;
+    var Persist = <?= $JSON4 ?>;
     var MinsAddons = <?= $MinsJSON ?>;
     var TxtsAddons = <?= $TxtsJSON ?>;
     var OprMeta = <?= $OprJSON ?>;
