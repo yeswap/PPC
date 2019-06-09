@@ -22,17 +22,6 @@ ob_start();
         </span>
       </p>
       <p>
-      Only show plans with:
-        <span class="chk"><input id="hotspot" type="checkbox"/>
-        <label for="hotspot">Hotspot</label></span>
-        <span class="chk"><input id="roaming" type="checkbox"/>
-        <label for="roaming">Domestic Roaming</label></span>
-        <span class="chk"><input id="iosMMS" type="checkbox"/>
-        <label for="iosMMS">iOS MMS</label></span>
-        <span class="chk"><input id="unlimTrot" type="checkbox"/>
-        <label for="unlimTrot">Unlim slow data</label></span>
-      </p>
-      <p>
       On:
         <span class="chk"><input id="ATTyes" type="checkbox" checked="checked"/>
         <label for="ATTyes">AT&amp;T</label></span>
@@ -44,7 +33,7 @@ ob_start();
         <label for="SPRyes">Sprint</label></span>
       </p>
       <p>
-        <label for="lines">Number of Lines</label>
+        <label for="lines">Lines Needed: </label>
         <select id="lines">
           <option value="1" selected>1</option>
           <option value="2">2</option>
@@ -58,7 +47,20 @@ ob_start();
           <option value="10">10</option>
         </select>
       </p>
-
+      <p>
+      Only show plans with:
+        <span class="chk"><input id="hotspot" type="checkbox"/>
+        <label for="hotspot">Hotspot</label></span>
+        <span class="chk"><input id="roaming" type="checkbox"/>
+        <label for="roaming">Domestic roaming</label></span>
+        <span class="chk"><input id="iosMMS" type="checkbox"/>
+        <label for="iosMMS">iOS MMS</label></span>
+        <span class="chk"><input id="unlimTrot" type="checkbox"/>
+        <label for="unlimTrot">Unlim slow data</label></span>
+      </p>
+      <p>
+        <span class="chk"><input id="Autopay" type="checkbox"/>
+        <label for="Autopay">Apply Autopay Discounts</label></span>
       <p>
         <input id="calc" type="button" value="Find Plans" onclick = "showMsg(); setTimeout(findPlans,5);"/>
       </p>
@@ -91,7 +93,8 @@ error_reporting(E_ALL);
             $FmlyPlnAry[$row["PlanID"]][$row["NumLines"]]=array( $row["Price"],
               $row["MinutesShared"],
               $row["TxtsShared"],
-              $row["DataShared"]
+              $row["DataShared"],
+              $row["AutoPayDiscount"]
               );
           }
           return $FmlyPlnAry;
