@@ -38,7 +38,7 @@ $feed->set_feed_url(array(
 	'https://www.tmonews.com/tag/prepaid/feed/',
 	'https://www.tmonews.com/tag/metropcs/feed/',
 	'http://blog.freedompop.com/feed/',
-	'https://www.blog.google/products/project-fi/rss',
+	'https://blog.google/products/google-fi/rss/',
 	'https://bgr.com/tag/metropcs/feed/',
 	'https://bgr.com/tag/boost/feed/',
 	'http://www.prepaidreviews.com/blog/feed/atom/'
@@ -698,9 +698,9 @@ ul.menu li.current_page_item a, ul.menu li.current_page_item a:hover {
           <div><span class="moItem" >Network:</span> <span id="moNetw"></span></div>
           <div><span id ="moCostLbl" class="moItem"></span><span id="moCost"></span>
           per <span id="moCostTyp"></span></div>
+          <div id = "moAutopay"></div>
           <div><span class="moItem">Calculated Monthly Cost:</span> <span id="moMonCost"></span></div>
           <div><span class="moItem">Taxes Collected:</span> <span id="moTaxes"></span></div>
-          <div id = "moAutopay"></div>
           <div id="moFmlyPlns"></div>
           <div><span class="moItem" >Included Minutes:</span> <span id="moMins"></span>,
           <span class="moItem" >Texts:</span> <span id="moTxts"></span>,

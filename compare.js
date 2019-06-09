@@ -1,4 +1,4 @@
-  document.getElementById("wrap").addEventListener("scroll",function(){
+document.getElementById("wrap").addEventListener("scroll",function(){
    var translate = "translate(0,"+this.scrollTop+"px)";
    this.querySelector("thead").style.transform = translate;
   });
@@ -9,7 +9,7 @@
     
     var eRow = {plan:0,cost:1,costType:2,overageThrottle:3, isPayGo:4, HasRollover:5, LineFee:6, multiLine:7, notes:8, oprID:9, AllowsHotspot:10, Hotspot_HS_Limit:11, Hotspot_HS_Throttle:12, HotspotThrottle:13, TextRoaming:14, VoiceRoaming:15, DataRoaming:16, AutopayDiscount:17, MMS:18, showWork:19};
     
-    var eFmlyPln = {Cost:0, MinsShared:1, TxtsShared:2, DataShared:3};
+    var eFmlyPln = {Cost:0, MinsShared:1, TxtsShared:2, DataShared:3, AutopayDiscount:4};
     
     //temporary globals until plan? and request? objects are implemented
     var row, Persist, rowMins, rowMB, rowTexts, colPerMo;
@@ -65,16 +65,13 @@
       if (mbgb == "GB") {
         mb *= 1024;
       }
+      var aryNetworks = [];
       
       var linesElem = document.getElementById("lines");
       var lines = parseInt(linesElem.value,10);
-      var payGoCost = 0;
-      var aryNetworks = [];
-      var savedVals, addonUsed;
-      var monCstDesc = "";
-      
-      //new vars 3/21/19
-      var colNetwork, rowNetwork, colPlanID, rowPlanID, planLines, thisMB;
+      var payGoCost, AutopayDiscount, bAppendMonCost, monCstDesc;
+      var savedVals, addonUsed, tempCost, thisMB;
+      var colNetwork, rowNetwork, colPlanID, rowPlanID, planLines;
       var colMins, colTexts, colMB, iVal, colCost, Cost, colCostPeriod;
       var colPlan, costPerMo, colIsPayGo, isPayGo, CostPeriod, dataOK;
       var minsOK, txtsOK, nLineFee, calcedCost, tmpCost, rowMeta;
@@ -96,11 +93,13 @@
       var needsHotspot = document.getElementById("hotspot").checked;
       var needsIosMMS = document.getElementById("iosMMS").checked;
       var needsunlimTrot = document.getElementById("unlimTrot").checked;
+      var autoPay = document.getElementById("Autopay").checked;
 
-      // loop thru table calculating cost andhiding rows that don't meet needs
+      // loop thru table calculating cost and hiding rows that don't meet needs.
     
       var table = document.getElementsByTagName('TABLE')[0];
       for (var i = 2; i < table.rows.length; i++) {
+        payGoCost = 0, bAppendMonCost = false, monCstDesc = "";
         row = table.rows[i];
         // restore modied rows
         reset(row.cells);
@@ -156,10 +155,10 @@
         if (colMins.textContent === "None") {
           rowMins = 0;
         }else{
-            rowMins = parseFloat(colMins.textContent.replace(/[A-Za-z$-]/g, ""), 0); //Remove alpha and $ from "$0.10/ea" etc.
-            if (colMins.textContent.indexOf('¢') >=0){
+          rowMins = parseFloat(colMins.textContent.replace(/[A-Za-z$-]/g, ""), 0); //Remove alpha and $ from "$0.10/ea" etc.
+          if (colMins.textContent.indexOf('¢') >=0){
               rowMins = rowMins / 100;
-            }
+          }
         }
         colTexts = row.cells[eTbl.txts];
         if (colTexts.textContent === "None") {
@@ -186,51 +185,53 @@
         payGoCost = 0;
         if(rowMins < 1){
           payGoCost += mins * rowMins;
-          //monCstDesc += mins + " minutes times " + rowMins + " ";
         }
         if(rowTexts < 1){
           payGoCost += texts * rowTexts;
-          //monCstDesc += texts + " texts times " + rowTexts + " ";
         }
         if(rowMB < 1 || rowMB == 2.05){
           //use unrounded cost per MB from persist array, not rounded amount in table
           iVal = parseFloat(savedVals[ePersist.data]);
           payGoCost += thisMB * iVal;
-          //monCstDesc += thisMB + " MB times " + rowMB + " ";
         }
-        //colCost = row.cells[eTbl.cost];
         Cost = parseFloat(rowMeta[eRow.cost]);
+        AutopayDiscount = parseFloat(rowMeta[eRow.AutopayDiscount]);
+        if(autoPay && planLines < 2 && AutopayDiscount > 0){
+          tempCost = Cost - AutopayDiscount;
+          monCstDesc = "$" + Cost + " - $" + AutopayDiscount + " autopay discount = $" + tempCost;
+        }else{
+          tempCost = Cost;
+          monCstDesc = "$" + Cost;
+        }
+
         CostPeriod = rowMeta[eRow.costType];
-        //CostPeriod = colCostPeriod.textContent;
         if (CostPeriod === 9) {
-          costPerMo = Cost/3;
-          monCstDesc = "$" + Cost + "/3 = $" + costPerMo.toFixed(2);
+          costPerMo = tempCost/3;
+          monCstDesc += "/3 = $" + costPerMo.toFixed(2);
         }else if (CostPeriod === 6) {
-          costPerMo = Cost/2;
-          monCstDesc = "$" + Cost + "/2 = $" + costPerMo.toFixed(2);
+          costPerMo = tempCost/2;
+          monCstDesc += "/2 = $" + costPerMo.toFixed(2);
         }else if (CostPeriod === 4) {
-          costPerMo = Cost/4;
-          monCstDesc = "$" + Cost + "/4 = $" + costPerMo.toFixed(2);
+          costPerMo = tempCost/4;
+          monCstDesc += "/4 = $" + costPerMo.toFixed(2);
         }else if (CostPeriod === 'S') {
-          costPerMo = Cost/6;
-          monCstDesc = "$" + Cost + "/6 = $" + costPerMo.toFixed(2);
+          costPerMo = tempCost/6;
+          monCstDesc += "/6 = $" + costPerMo.toFixed(2);
         }else if (CostPeriod === 'Y') {
-          costPerMo = Cost/12;
-          monCstDesc = "$" + Cost + "/12 = $" + costPerMo.toFixed(2);
+          costPerMo = tempCost/12;
+          monCstDesc += "/12 = $" + costPerMo.toFixed(2);
         }else if (CostPeriod === 'D') {
-          costPerMo = Cost * 30;
-          monCstDesc = "$" + Cost + "times 30 = $" + costPerMo.toFixed(2);
+          costPerMo = tempCost * 30;
+          monCstDesc += " times 30 = $" + costPerMo.toFixed(2);
         }else if (CostPeriod === 0) {
           costPerMo = 0;
-          monCstDesc = "0";
+          monCstDesc = "$0";
         }else{
-          costPerMo = Cost;
-          monCstDesc = "$" + Cost;
+          costPerMo = tempCost;
         }
         nLineFee = parseFloat(rowMeta[eRow.LineFee]);
         colPlan = rowMeta[eRow.plan];
         colPerMo = row.cells[eTbl.monCost];
-        //colIsPayGo = row.cells[eTbl.isPayGo];
         isPayGo = rowMeta[eRow.isPayGo];
         if (payGoCost && (isPayGo === 1)) {
           if (payGoCost > costPerMo) {
@@ -242,6 +243,9 @@
             colPerMo.textContent = costPerMo.toFixed(2);
             monCstDesc = "$" + colPerMo.textContent + " minimum monthly cost";
           }
+        }else{
+          //costPerMo -= AutopayDiscount;
+          colPerMo.textContent = costPerMo.toFixed(2);
         }
         addonUsed = false;
         if ((colMB.textContent == "Unlimited" || rowMB >= thisMB) ||
@@ -300,7 +304,7 @@
         }else{
           rowMeta[eRow.showWork] = monCstDesc;
         }
-        if (addonUsed && lines ==1) {
+        if (bAppendMonCost || (addonUsed && lines ==1)) {
           rowMeta[eRow.showWork] += " = " + colPerMo.textContent;
         }
        } // end for
@@ -311,11 +315,12 @@
   function CalcFmylPlans (cells, lines, payGoCost, mb, mins, texts, monCstDesc){
     var calcedCost = parseFloat(colPerMo.textContent), i, j, splitCost;
     var FmlyPlnCst, bigPart, secondPart, testCost, linesFound = 0;
-    var rowPlanID = parseInt(cells[eTbl.ID].textContent,10), bigCost, smallCost;
-    var savedVals = Persist[rowPlanID][0], tmpShowWork, needsTotal = false;
-    var rowMeta = RowAry[rowPlanID][0];
+    var rowPlanID = parseInt(cells[eTbl.ID].textContent,10), bigCost;
+    var AutopayDiscount, smallCost, needsTotal = false;
+    var savedVals = Persist[rowPlanID][0], tmpShowWork, tmpCost;
+    var rowMeta = RowAry[rowPlanID][0], autoPayBigDiscount;
     var addonDesc = rowMeta[eRow.showWork], fmlyPlanDesc;
-    var prependAddon = true;
+    var prependAddon = true, autoPaySmallDiscount;
 
     //Are there any family plans?
     if (FmlyPlns[rowPlanID] !== undefined){
@@ -324,7 +329,13 @@
       if (FmlyPlns[rowPlanID][lines] !== undefined){
         linesFound = lines;
         FmlyPlnCst = Number(FmlyPlns[rowPlanID][lines][eFmlyPln.Cost]);
-        fmlyPlanDesc = "$" + FmlyPlnCst + " " + lines + " line plan";
+        AutopayDiscount = Number(FmlyPlns[rowPlanID][lines][eFmlyPln.AutopayDiscount]);
+        if (AutopayDiscount > 0){
+          fmlyPlanDesc = "$" + FmlyPlnCst + " " + lines + " line plan" + " - $"  + AutopayDiscount + " auto pay discount = $" + (FmlyPlnCst - AutopayDiscount);
+          FmlyPlnCst -= AutopayDiscount;
+        }else{
+          fmlyPlanDesc = "$" + FmlyPlnCst + " " + lines + " line plan";
+        }
         //savedVals[ePersist.showWork contains addons
         if (rowMeta[eRow.showWork]){
           needsTotal = true;
@@ -337,6 +348,7 @@
             linesFound = i;
             bigCost = Number(FmlyPlns[rowPlanID][i][eFmlyPln.Cost]);
             FmlyPlnCst = bigCost;
+            AutopayDiscount = Number(FmlyPlns[rowPlanID][i][eFmlyPln.AutopayDiscount]);
             bigPart = linesFound;
             secondPart = lines - bigPart;
             j = 1;
@@ -345,18 +357,28 @@
               FmlyPlnCst += bigCost;
               j++;
             }
-            //FmlyPlnCst = Number(FmlyPlns[rowPlanID][bigPart][eFmlyPln.Cost]);
-            tmpShowWork = j + " $" + bigCost + " " + bigPart + " line plan" + (j==1 ? " " : "s ");
+            if (AutopayDiscount > 0){
+              tmpShowWork = j + " $" + bigCost + " " + bigPart + " line plan" + (j==1 ? " " : "s ") + " - $"  + AutopayDiscount + " auto pay discount = $" + (bigCost - AutopayDiscount);
+              bigCost -= AutopayDiscount
+            }else{
+              tmpShowWork = j + " $" + bigCost + " " + bigPart + " line plan" + (j==1 ? " " : "s ");
+            }
             if(FmlyPlns[rowPlanID][secondPart] !== undefined){
               smallCost = Number(FmlyPlns[rowPlanID][secondPart][eFmlyPln.Cost]);
               FmlyPlnCst += smallCost;
-              tmpShowWork +=  "+ 1 $" + smallCost + " " + secondPart + " line  plan ";
+              if (AutopayDiscount > 0){
+                tmpShowWork +=  "+ 1 $" + smallCost + " " + secondPart + " line  plan " + " - $"  + AutopayDiscount + " auto pay discount = $" + (smallCost - AutopayDiscount);
+                smallCost -= AutopayDiscount
+              }else{
+                tmpShowWork +=  "+ 1 $" + smallCost + " " + secondPart + " line  plan ";
+              }
              }else{
+              // *** need to brak out family plan discount from calcedCost ***
               FmlyPlnCst += calcedCost * secondPart;
               if (secondPart == 1){
-                tmpShowWork += "+ 1 $" + calcedCost + " 1 line plan";
+                tmpShowWork += "+ 1 " + monCstDesc + " 1 line plan";
               } else {
-                tmpShowWork += "+ " + secondPart + " $" + calcedCost + " 1 line plans";
+                tmpShowWork += "+ " + secondPart + " " + monCstDesc + " 1 line plans";
               }
             }
             needsTotal = true;
@@ -370,10 +392,26 @@
         (FmlyPlns[rowPlanID][secondPart] !== undefined)) {
           bigCost = Number(FmlyPlns[rowPlanID][bigPart][eFmlyPln.Cost]);
           smallCost = Number(FmlyPlns[rowPlanID][secondPart][eFmlyPln.Cost]);
-          splitCost = bigCost + smallCost;
+          autoPayBigDiscount = Number(FmlyPlns[rowPlanID][bigPart][eFmlyPln.AutopayDiscount]);
+          autoPaySmallDiscount = Number(FmlyPlns[rowPlanID][secondPart][eFmlyPln.AutopayDiscount]);
+          splitCost = bigCost + smallCost - autoPayBigDiscount - autoPaySmallDiscount;
           if (splitCost < FmlyPlnCst){
             FmlyPlnCst = splitCost;
-            fmlyPlanDesc = "+ $" + bigCost + " " + bigPart + " line  plan + $" + smallCost + " " + secondPart+ " line plan";
+            if (bigPart === secondPart){
+              fmlyPlanDesc = "2 $" + bigCost + " " + bigPart + " line family plans";
+              if (autoPayBigDiscount){
+                fmlyPlanDesc += " - $" + (autoPayBigDiscount * 2) + " auto pay discount";
+              }
+            }else{
+              fmlyPlanDesc = "$" + bigCost + " " + bigPart + " line  plan";
+              if(autoPayBigDiscount){
+                fmlyPlanDesc += " - $" + autoPayBigDiscount + " auto pay discount";
+              }
+              fmlyPlanDesc +=  " + $" + smallCost + " + " + secondPart + " line plan";
+              if(autoPaySmallDiscount){
+                fmlyPlanDesc += " - $" + autoPaySmallDiscount+ " auto pay discount";
+              }
+            }
           }else{
             fmlyPlanDesc = tmpShowWork;
           }
@@ -589,6 +627,10 @@ function tryAddon(type, cells, have, need, lines=1){
     var aryObj = FmlyPlns[sID];
     for(var lines in aryObj) {
       retVal += sBefore + lines + " Lines $" + aryObj[lines][eFmlyPln.Cost];
+      AutopayDiscount = aryObj[lines][eFmlyPln.AutopayDiscount];
+      if(AutopayDiscount > 0){
+         retVal += ", $" + AutopayDiscount + " auto pay discount";
+      }
       dataShared = (aryObj[lines][eFmlyPln.DataShared] == '1');
       minsShared = (aryObj[lines][eFmlyPln.MinsShared] == '1');
       if(dataShared && minsShared){
