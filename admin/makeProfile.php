@@ -487,9 +487,9 @@ table, caption, tbody, tfoot, thead, tr, th, td {
         echo "<div><b>Notes:</b> ".$row["oNotes"]."</div>\n";
       }
       if($row["noMMS"]){
-        echo "<div><b>MMS (picture and group messaging): does not work on iPhones.</b></div>";
+        echo "<div><b>MMS supported on iOS?</b> No.</div>";
       }else{
-        echo "<div><b>MMS (picture and group messaging):</b> is supported on iPhones.</div>";
+        echo "<div><b>MMS supported on iOS?</b> Yes.</div>";
       }
       echo "<div><b>Network:</b> ".$row["nName"]."</div>\n";
       echo "<div><b>Bands:</b> ".$row["Bands"]."</div>\n";
@@ -687,12 +687,18 @@ break;
       }
       $rowsFP = $resultFP->num_rows;
       if($rowsFP > 0) {
-          $sFP="<br/><b>Family Plans:</b> ";
+          $sFP="<br/><b>Family Plans:</b><br/>";
         $sBefore = "";
+        $sNotes = "";
         while ($rowFP = $resultFP->fetch_array()) {
           $sFP .= $sBefore.$rowFP["NumLines"]." lines: $".$rowFP["Price"];
-          $sNotes = $rowFP["Notes"];
-          $sBefore = ", ";
+          if ($rowFP["AutoPayDiscount"] != "0.00"){
+            $sFP .= ", $".$rowFP["AutoPayDiscount"]. " autopay discount";
+          }
+          if ($rowFP["Notes"]){
+            $sNotes = "<br><b>Family Plan Notes: </b>".$rowFP["Notes"];
+          }
+          $sBefore = "<br/>";
         }
         echo $sFP . ". " . $sNotes."\n";
       }
@@ -743,7 +749,7 @@ break;
         echo formatValidity($rowDA["Validity"]);
       }
       if ($row["Notes"]){
-        echo "<br/><b>Notes: </b>" . $row["Notes"];
+        echo "<br/><b>Plan Notes: </b>" . $row["Notes"];
       }
       echo "</li>\n";
     }
