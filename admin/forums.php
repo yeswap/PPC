@@ -1,6 +1,6 @@
 <?php
 error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
-ini_set("display_errors", 0); # 0 - production, 1 - development
+ini_set("display_errors", 1); # 0 - production, 1 - development
 // Make sure SimplePie is included. You may need to change this to match the location of simplepie.inc.
 require_once('../../simplepie/autoloader.php');
 date_default_timezone_set('America/Los_Angeles');
