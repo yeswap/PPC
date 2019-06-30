@@ -66,13 +66,22 @@ foreach ($feed->get_items() as $item) {
 	if ($item->get_date('U') > $oldnews) {
 		// If the item was posted within the last week, store the item in our array we set up.
 
-  	$creator = $item->get_item_tags(SIMPLEPIE_NAMESPACE_DC_11, 'creator');
-		$content = myTruncate($item->get_content(), 220);
+  	
+		$content = '<blockquote>'.myTruncate($item->get_content(), 220).'</blockquote>';
+		
+		//Get the author if she exists
+		if ($author = $item->get_author()){
+	    $by = $author->get_name();
+		}else{
+		  $creator = $item->get_item_tags(SIMPLEPIE_NAMESPACE_DC_11, 'creator');
+		  $by = $creator[0]['data'];
+		}
 
+    //add the item to the array
 	  $news[] = array(
 	  "title"=>$item->get_feed()->get_title(),
 	  "permalink"=>$item->get_permalink(),
-	  "creator"=>$creator[0]['data'],
+	  "creator"=>$by,
 	  "subject" =>$item->get_title(),
 	  "date"=>$item->get_date('U'),
 	  "content"=>$content);
@@ -100,7 +109,7 @@ if($rows > 0) {
 	  "creator"=>$row['creator'],
 	  "subject" =>$row['subject'],
 	  "date"=>$row['date'],
-	  "content"=>nl2br(myTruncate($row['content'], 220)));
+	  "content"=>nl2br($row['content']));
   }
 }
 // sort the array
@@ -126,7 +135,7 @@ echo "<div id='newswrap'>\n";
 			$creator = $item["creator"];
 ?>
 
-			<p><small>Posted <?php if($creator)echo 'by '. $creator . ' '; ?><?php echo date('j F Y | g:i a', $item["date"]); ?> </small></p>
+			<p class="entry-meta">Posted <?php if($creator)echo 'by '. $creator . ' '; ?><?php echo date('j F Y | g:i a', $item["date"]); ?></p>
 			<p><?php echo $item["content"]; ?></p>
 		</div>
  		<hr class="bar"/>
@@ -250,6 +259,11 @@ html {
 body,page {
   max-width:100%;
   font-family: sans-serif;
+}
+blockquote {
+  margin: 0 .25em 0 0.25em;
+  padding: 0 .5em 0 .5em;
+  border-left: 1px solid #007d15;
 }
 #branding{
   margin-bottom: .5em;
@@ -389,7 +403,12 @@ a:hover, a:active{text-decoration: underline;}
   line-height: 20px;
 }
 #left-menu a, #right-menu a {color:#007d15;}
-
+.entry-meta{
+  color: #222;
+  clear: both;
+  font-size: 12px;
+  line-height: 18px;
+}
 hr {
     color: #007d15;
     background-color: #007d15;
@@ -422,7 +441,8 @@ thead, th {color:white; background-color:#007d15;}
     width:100%;
     overflow-x: hidden;
 }
-#newswrap, #wrap{height: 73vh;}
+#wrap{height: 66vh;}
+#newswrap {height: 73vh;}
 .textfield {
    width: 10ex;
 }

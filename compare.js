@@ -240,11 +240,13 @@ document.getElementById("wrap").addEventListener("scroll",function(){
             colPerMo.textContent = tmpCost.toFixed(2);
             monCstDesc = "$" + payGoCost.toFixed(2) + " PayGo cost";
           }else{
+            costPerMo += nLineFee;
             colPerMo.textContent = costPerMo.toFixed(2);
             monCstDesc = "$" + colPerMo.textContent + " minimum monthly cost";
           }
         }else{
           //costPerMo -= AutopayDiscount;
+          costPerMo += nLineFee;
           colPerMo.textContent = costPerMo.toFixed(2);
         }
         addonUsed = false;
