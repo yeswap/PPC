@@ -156,12 +156,12 @@ foreach ($feed->get_items() as $item) {
 			$permalink = rawurlencode($permalink);
 			$author = rawurlencode($creator[0]['data']);
 			$itemTitle = rawurlencode($itemTitle);
-			$content = rawurlencode($content);
+			$content = rawurlencode('%3Cblockquote%3E'.$content.'%3C%2Fblockquote%3E');
+
 ?>
 			
  		
- 		<p><a href="https://admin.prepaidcompare.net/AddNews.php?mode=add&amp;table=NewsItems&amp;title=<?= $feedTitle ?>&amp;permalink=<?= $permalink ?>&amp;creator=<?= $author ?>&amp;subject=<?= $itemTitle ?>&amp;date= <?= $item->get_date('Y-m-d H:i') ?>&amp;content=<?= $content ?>">Add to News</a></a></p>
- 		
+ 		<p><a href="https://admin.prepaidcompare.net/AddNews.php?mode=add&amp;table=NewsItems&amp;title=<?= $feedTitle ?>&amp;permalink=<?= $permalink ?>&amp;creator=<?= $author ?>&amp;subject=<?= $itemTitle ?>&amp;date= <?= $item->get_date('Y-m-d H:i') ?>&amp;content=<?= $content ?>">Add to News</a></p>
  		<hr class="bar"/>
 <?php } ?>
 </div>
