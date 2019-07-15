@@ -70,7 +70,7 @@ document.getElementById("wrap").addEventListener("scroll",function(){
       var linesElem = document.getElementById("lines");
       var lines = parseInt(linesElem.value,10);
       var payGoCost, AutopayDiscount, bAppendMonCost, monCstDesc;
-      var savedVals, addonUsed, tempCost, thisMB;
+      var savedVals, addonUsed, tempCost, thisMB, autoPay;
       var colNetwork, rowNetwork, colPlanID, rowPlanID, planLines;
       var colMins, colTexts, colMB, iVal, colCost, Cost, colCostPeriod;
       var colPlan, costPerMo, colIsPayGo, isPayGo, CostPeriod, dataOK;
@@ -299,7 +299,7 @@ document.getElementById("wrap").addEventListener("scroll",function(){
         }
 
         if (lines > 1 && planLines === 0){
-          monCstDesc = CalcFmylPlans (row.cells, lines, payGoCost, mb, mins, texts, monCstDesc);
+          monCstDesc = CalcFmylPlans (row.cells, lines, payGoCost, mb, mins, texts, monCstDesc, autoPay);
           rowMeta[eRow.showWork] = monCstDesc;
         }else if (rowMeta[eRow.showWork]) {
           rowMeta[eRow.showWork] = monCstDesc + rowMeta[eRow.showWork];
@@ -314,7 +314,7 @@ document.getElementById("wrap").addEventListener("scroll",function(){
     scrollToTop(table);
     loader.style.display = "none";
   }
-  function CalcFmylPlans (cells, lines, payGoCost, mb, mins, texts, monCstDesc){
+  function CalcFmylPlans (cells, lines, payGoCost, mb, mins, texts, monCstDesc, autoPay){
     var calcedCost = parseFloat(colPerMo.textContent), i, j, splitCost;
     var FmlyPlnCst, bigPart, secondPart, testCost, linesFound = 0;
     var rowPlanID = parseInt(cells[eTbl.ID].textContent,10), bigCost;
@@ -322,7 +322,7 @@ document.getElementById("wrap").addEventListener("scroll",function(){
     var savedVals = Persist[rowPlanID][0], tmpShowWork, tmpCost;
     var rowMeta = RowAry[rowPlanID][0], autoPayBigDiscount;
     var addonDesc = rowMeta[eRow.showWork], fmlyPlanDesc;
-    var prependAddon = true, autoPaySmallDiscount;
+    var prependAddon = true, autoPaySmallDiscount, autoPay;
 
     //Are there any family plans?
     if (FmlyPlns[rowPlanID] !== undefined){
@@ -332,7 +332,7 @@ document.getElementById("wrap").addEventListener("scroll",function(){
         linesFound = lines;
         FmlyPlnCst = Number(FmlyPlns[rowPlanID][lines][eFmlyPln.Cost]);
         AutopayDiscount = Number(FmlyPlns[rowPlanID][lines][eFmlyPln.AutopayDiscount]);
-        if (AutopayDiscount > 0){
+        if (autoPay && AutopayDiscount > 0){
           fmlyPlanDesc = "$" + FmlyPlnCst + " " + lines + " line plan" + " - $"  + AutopayDiscount + " auto pay discount = $" + (FmlyPlnCst - AutopayDiscount);
           FmlyPlnCst -= AutopayDiscount;
         }else{
@@ -359,7 +359,7 @@ document.getElementById("wrap").addEventListener("scroll",function(){
               FmlyPlnCst += bigCost;
               j++;
             }
-            if (AutopayDiscount > 0){
+            if (autoPay && AutopayDiscount > 0){
               tmpShowWork = j + " $" + bigCost + " " + bigPart + " line plan" + (j==1 ? " " : "s ") + " - $"  + AutopayDiscount + " auto pay discount = $" + (bigCost - AutopayDiscount);
               bigCost -= AutopayDiscount
             }else{
@@ -368,7 +368,7 @@ document.getElementById("wrap").addEventListener("scroll",function(){
             if(FmlyPlns[rowPlanID][secondPart] !== undefined){
               smallCost = Number(FmlyPlns[rowPlanID][secondPart][eFmlyPln.Cost]);
               FmlyPlnCst += smallCost;
-              if (AutopayDiscount > 0){
+              if (autoPay && AutopayDiscount > 0){
                 tmpShowWork +=  "+ 1 $" + smallCost + " " + secondPart + " line  plan " + " - $"  + AutopayDiscount + " auto pay discount = $" + (smallCost - AutopayDiscount);
                 smallCost -= AutopayDiscount
               }else{
@@ -401,16 +401,16 @@ document.getElementById("wrap").addEventListener("scroll",function(){
             FmlyPlnCst = splitCost;
             if (bigPart === secondPart){
               fmlyPlanDesc = "2 $" + bigCost + " " + bigPart + " line family plans";
-              if (autoPayBigDiscount){
+              if (autoPay && autoPayBigDiscount){
                 fmlyPlanDesc += " - $" + (autoPayBigDiscount * 2) + " auto pay discount";
               }
             }else{
               fmlyPlanDesc = "$" + bigCost + " " + bigPart + " line  plan";
-              if(autoPayBigDiscount){
+              if(autoPay && autoPayBigDiscount){
                 fmlyPlanDesc += " - $" + autoPayBigDiscount + " auto pay discount";
               }
               fmlyPlanDesc +=  " + $" + smallCost + " + " + secondPart + " line plan";
-              if(autoPaySmallDiscount){
+              if(autoPay && autoPaySmallDiscount){
                 fmlyPlanDesc += " - $" + autoPaySmallDiscount+ " auto pay discount";
               }
             }
