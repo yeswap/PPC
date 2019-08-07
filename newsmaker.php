@@ -4,6 +4,7 @@ ini_set("display_errors", 1); # 0 - production, 1 - development
 ob_start();
 // Make sure SimplePie is included. You may need to change this to match the location of simplepie.inc.
 require_once('../simplepie/autoloader.php');
+//require_once('../admin/PPClibrary.php');
 date_default_timezone_set('America/Los_Angeles');
 
 // Original my Truncate PHP code by Chirp Internet: www.chirp.com.au
@@ -25,6 +26,15 @@ function myTruncate($string, $limit, $break=" ", $pad="...")
   return $string;
 }
 
+// Connect to the database
+$connection = new mysqli('db151c.pair.com', 'yeswap_3', 'odfft2v02cc0', 'yeswap_ppcompare');
+
+if ($connection->connect_errno > 0) {
+ 	die ('Unable to connect to database [' . $connection->connect_error . ']');
+}
+
+$connection->query("SET time_zone='-07:00';");
+
 // We'll process this feed with all of the default options.
 $feed = new SimplePie();
 
@@ -34,7 +44,6 @@ $feed->set_feed_url(array(
 	'http://bestmvno.com/feed/',
 	'http://prepaidmobilephonereviews.com/feed/',
 	'http://feeds.feedburner.com/PrepaidPhoneNews?format=xml',
-	'http://cricketwireless.mediaroom.com/news-releases?pagetemplate=rss',
 	'https://www.tmonews.com/tag/prepaid/feed/',
 	'https://www.tmonews.com/tag/metropcs/feed/',
 	'http://blog.freedompop.com/feed/',
@@ -65,39 +74,47 @@ foreach ($feed->get_items() as $item) {
 	// Compare the timestamp of the feed item with a week ago.
 	if ($item->get_date('U') > $oldnews) {
 		// If the item was posted within the last week, store the item in our array we set up.
+		// Check if item is already in the database
+    $hashedID = md5($item->get_id());
+    $sql = "SELECT * FROM NewsItems WHERE hashedID ='$hashedID' LIMIT 1";
+    if (!$result = $connection->query($sql)) {
+  	    die ('There was an error running if exists query[' . $connection->error . ']');
+    }
+    if(mysqli_num_rows($result) == 0){
+      //echo "not found<br/>";
+      // It's a new item, add it to the table
+      //$content= $connection->real_escape_string(trim(myTruncate($item->get_content(), 220)));
+      //echo $content;
+  		$content = '<blockquote>'.$connection->real_escape_string(trim(myTruncate($item->get_content(), 220))).'</blockquote>';
 
-  	
-		$content = '<blockquote>'.myTruncate($item->get_content(), 220).'</blockquote>';
-		
-		//Get the author if she exists
-		if ($author = $item->get_author()){
-	    $by = $author->get_name();
-		}else{
-		  $creator = $item->get_item_tags(SIMPLEPIE_NAMESPACE_DC_11, 'creator');
-		  $by = $creator[0]['data'];
-		}
+  		//Get the author if she exists
+  		if ($author = $item->get_author()){
+  	    $by = $author->get_name();
+  		}else{
+  		  $creator = $item->get_item_tags(SIMPLEPIE_NAMESPACE_DC_11, 'creator');
+  		  $by = $connection->real_escape_string($creator[0]['data']);
+  		}
+  		
+  		$title = $connection->real_escape_string($item->get_feed()->get_title());
+	    $permalink = $connection->real_escape_string($item->get_permalink());
+	    $subject = $connection->real_escape_string($item->get_title());
+	    $date = $item->get_date('Y-m-d');
 
-    //add the item to the array
-	  $news[] = array(
-	  "title"=>$item->get_feed()->get_title(),
-	  "permalink"=>$item->get_permalink(),
-	  "creator"=>$by,
-	  "subject" =>$item->get_title(),
-	  "date"=>$item->get_date('U'),
-	  "content"=>$content);
+      $sql = "INSERT INTO NewsItems(HashedID,title,permalink,creator,subject,date,	content) VALUES ('$hashedID', '$title', '$permalink', '$by', '$subject', '$date', '$content')";
+      if (!$result = $connection->query($sql)) {
+        echo $sql . '<br />';
+  	    die ('There was an error running INSERT query[' . $connection->error . ']');
+      }
+    }
   }
 }
-//Get user entered items from newsitems table
-$connection = new mysqli('db151c.pair.com', 'yeswap_3', 'odfft2v02cc0', 'yeswap_ppcompare');
 
-if ($connection->connect_errno > 0) {
- 	die ('Unable to connect to database [' . $connection->connect_error . ']');
-}
-$connection->query("SET time_zone='-07:00';");
+// Retrieve and display items published in the last two weeks
+
 $sql = "SELECT title,permalink,creator,subject,UNIX_TIMESTAMP(date) as date,content FROM NewsItems WHERE date BETWEEN ADDDATE(NOW(),INTERVAL -2 WEEK) AND NOW()";
 
 if (!$result = $connection->query($sql)) {
-  	die ('There was an error running query[' . $connection->error . ']');
+  	die ('There was an error running SELECT query[' . $connection->error . ']');
 }
 $rows = $result->num_rows;
 $cols = $result->field_count;

@@ -228,7 +228,7 @@ error_reporting(E_ALL);
         die ('Unable to connect to database [' . $connection->connect_error . ']');
       }
     //  $sql = "SELECT * FROM Plans";
-      $sql = "select Plans.ID as PlanID, Plans.MonthlyCost as MonthlyCost, Operators.Name as Operator, Networks.Name as Network, Plans.Name as Plan, Cost, CostType, Minutes, Texts, AppleSupportLevel & 1=1 as MMS, Data, OverageThrottle, Plans.Notes as Notes, isPayGo, HasRollover, LineFee, MultiLine, Plans.OperatorID, AllowsHotspot, Hotspot_HS_Limit, Hotspot_HS_Throttle, HotspotThrottle, TextRoaming, VoiceRoaming, DataRoaming, AutopayDiscount from Plans join Operators on Plans.OperatorID = Operators.OperatorID join Networks on Operators.NetworkID = Networks.NetworkID order by MonthlyCost, Network";
+      $sql = "select Plans.ID as PlanID, Plans.MonthlyCost as MonthlyCost, Operators.Name as Operator, Networks.Name as Network, Plans.Name as Plan, Cost, CostType, Minutes, Texts, AppleSupportLevel & 1=1 as MMS, Data, OverageThrottle, Plans.Notes as Notes, isPayGo, HasRollover, LineFee, MultiLine, Plans.OperatorID, AllowsHotspot, Hotspot_HS_Limit, Hotspot_HS_Throttle, HotspotThrottle, TextRoaming, VoiceRoaming, DataRoaming, AutopayDiscount from Plans join Operators on Plans.OperatorID = Operators.OperatorID join Networks on Operators.NetworkID = Networks.NetworkID order by MonthlyCost, Operator, Network";
       if (!$result = $connection->query($sql)) {
           die ('There was an error running query[' . $connection->error . ']');
       }
