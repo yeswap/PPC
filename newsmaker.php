@@ -98,7 +98,7 @@ foreach ($feed->get_items() as $item) {
   		$title = $connection->real_escape_string($item->get_feed()->get_title());
 	    $permalink = $connection->real_escape_string($item->get_permalink());
 	    $subject = $connection->real_escape_string($item->get_title());
-	    $date = $item->get_date('Y-m-d');
+	    $date = $item->get_date('Y-m-d H:i');
 
       $sql = "INSERT INTO NewsItems(HashedID,title,permalink,creator,subject,date,	content) VALUES ('$hashedID', '$title', '$permalink', '$by', '$subject', '$date', '$content')";
       if (!$result = $connection->query($sql)) {
