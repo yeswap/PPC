@@ -37,6 +37,7 @@ $feed->set_feed_url(array(
 	'https://www.twigby.com/blog/feed/',
 	'https://www.theverge.com/rss/index.xml',
 	'https://techcrunch.com/feed/',
+	'http://cricketwireless.mediaroom.com/news-releases?pagetemplate=rss',
 	'https://bestcellular.com/feed/',
 	'https://www.consumercellular.com/blog/feed/'
 ));
@@ -156,7 +157,7 @@ foreach ($feed->get_items() as $item) {
 			$permalink = rawurlencode($permalink);
 			$author = rawurlencode($creator[0]['data']);
 			$itemTitle = rawurlencode($itemTitle);
-			$content = rawurlencode('%3Cblockquote%3E'.$content.'%3C%2Fblockquote%3E');
+			$content = rawurlencode($content);
 
 ?>
 			

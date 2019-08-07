@@ -41,6 +41,7 @@
       $date=date("Y-m-d H:i");
       $subject="";
       $content="";
+      $HashedID="";
       
       function url_get_contents ($Url) {
           if (!function_exists('curl_init')){
@@ -60,7 +61,7 @@
     	}
     	$sTable='NewsItems';
       if (isset($_GET["mode"]) && $_GET["mode"]=='edit'){
-    	  $sql = "SELECT title,permalink,creator,subject,UNIX_TIMESTAMP(date) as date,content FROM $sTable";
+    	  $sql = "SELECT HashedID, title,permalink,creator,subject,UNIX_TIMESTAMP(date) as date,content FROM $sTable";
     	  // Add code to fill vars from SQL query results
       }
       if(isset($_GET["id"])) { $id = $_GET["id"];}
@@ -109,7 +110,7 @@
           <div id="charactersRemaining"></div>
           <br><br>
           <input type="hidden" name="table" value="<?=$sTable ?>">
-          
+          <input type="hidden" name="HashedID" value="<?=$HashedID ?>">
           <input type="submit" name="SubmitButn" value="Update"/>
           <input type="submit" name="SubmitButn" value="Delete"
             onclick="return confirm('Are you sure you want delete this record?')"/>

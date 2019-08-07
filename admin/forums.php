@@ -154,7 +154,7 @@ foreach ($feed->get_items() as $item) {
 			$permalink = rawurlencode($permalink);
 			$author = rawurlencode($creator[0]['data']);
 			$itemTitle = rawurlencode($itemTitle);
-			$content = rawurlencode($content);
+			$content = rawurlencode(substr($content,0,1500));
 ?>
 			
  		

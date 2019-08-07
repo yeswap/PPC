@@ -95,6 +95,9 @@
       case "3":
         $validity = " valid for 30 days";
         break;
+      case "M":
+        $validity = " valid for one month";
+        break;
       case "1":
         $validity = " expires with plan month";
         break;
@@ -103,6 +106,18 @@
         break;
       case "9":
         $validity = " valid for 90 days";
+        break;
+      case "4":
+        $validity = " valid for 120 days";
+        break;
+      case "6":
+        $validity = " valid for 60 days";
+        break;
+      case "S":
+        $validity = " valid for 180 days";
+        break;
+      case "W":
+        $validity = " valid for 7 days";
         break;
       case "0":
       case "-1":
