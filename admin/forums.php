@@ -36,7 +36,9 @@ $feed->set_feed_url(array(
 	'https://www.reddit.com/r/freedompop/.rss',
 	'https://www.reddit.com/r/CricketWireless/.rss',
 	'https://www.reddit.com/r/MetroPCS/.rss',
-	'https://www.reddit.com/r/ProjectFi/.rss',
+	'https://www.reddit.com/r/GoogleFi/.rss',
+	'https://www.reddit.com/r/ting/.rss',
+	'https://www.reddit.com/r/mintmobile/.rss',
 	'http://micallen.freeforums.org/feed.php'
 ));
 
