@@ -1,0 +1,223 @@
+/* =Reset default browser CSS. Based on work by Eric Meyer: http://meyerweb.com/eric/tools/css/reset/index.html
+-------------------------------------------------------------- */
+
+html, body, div, span, applet, object, iframe,
+h1, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, font, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td {
+  border: 0;
+  font-family: inherit;
+  font-size: 100%;
+  font-style: inherit;
+  font-weight: inherit;
+  margin: 0;
+  outline: 0;
+  padding: 0;
+  vertical-align: baseline;
+}
+  body,page {
+    max-width:100%;
+    font-family: sans-serif;
+  }
+  a, a:hover, a:active {
+      color: #007d15;
+  }
+  #branding{
+    margin-bottom: 3pt;
+  }
+	img {
+		max-width:98% !important;
+    height:auto !important;
+	}
+	p {
+	  margin: 1em 0;
+	}
+	em {
+    font-style: italic;
+  }
+  strong {
+      font-weight: bold;
+  }
+	html{
+	  width:100%;
+	  background-color: #E0DED7;
+	  padding:0;
+	  margin:0;
+	  min-height: 100%;
+	}
+  #page {
+    float:none;
+    padding:0 .25em;
+    margin: 1.5em auto;
+    left:0;
+    width:auto;
+    max-width:800px;
+    right:auto;
+    overflow:hidden;
+    background-color:white;
+    -moz-box-shadow: 0 5px 16px rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 0 5px 18px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 5px 18px rgba(0, 0, 0, 0.3);
+  }
+  #content{
+    margin: 0 5%;
+    padding: .5em;
+  }
+  #footer{
+    padding: 1em 0;
+    margin-top: 1em;
+    margin-right: 1em;
+    border-top: 1px solid #007d15;
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+  }
+  #footer a {
+      display: table-cell;
+      text-align: center;
+  }
+  .separator {clear:both;}
+  #site-title {
+    border-bottom: 1px solid #007d15;
+    text-align: center;
+    padding:.7em 1em .7em .4em;
+  }
+  #site-title a {
+    color: black;
+  }
+  #site-title h1 {
+    display: inline-block;
+  }
+  #site-title h1 a {
+    font-size: 38px;
+    font-weight: bold;
+    line-height: 28px;
+    text-decoration: none;
+  }
+ 
+	a {
+    text-decoration: none;
+  }
+  a:hover, a:active{text-decoration: underline;}
+  #page-title a:hover, #page-title a:active{text-decoration: none;}
+
+	#subtitle, #updated {
+    margin: .5em 0;
+    word-wrap: break-word;
+    color:gray;
+  }
+	body{height:100%;}
+	#news{
+	  padding:1em;
+	  margin:1.5em auto 0;
+	  max-width:640px;
+	  background-color:white;
+	}
+  .item{
+    line-height: 1.625;
+    font-family: Verdana,Helvetica,Arial,Sans-Serif;
+  }
+  /* =Menu
+  -------------------------------------------------------------- */
+ #menu-container{
+   border-bottom: 1px solid #007d15;
+   overflow: hidden;
+ }
+ #menu-container nav{
+    height:auto;
+    width:auto;
+    float:left;
+  }
+  ul.menu li {
+    display: inline;
+    margin: 0;
+  }
+  
+  ul.menu li a {
+    padding-top: 5px;
+    padding-right: 15px;
+    padding-bottom: 5px;
+    padding-left: 15px;
+    text-decoration: none;
+    font-family: Verdana,Helvetica,Arial,Sans-Serif;
+    font-style: normal;
+    font-variant: normal;
+    font-size: 80%;
+    font-size-adjust: none;
+    font-stretch: normal;
+    font-weight: bold;
+    line-height: normal;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    color: black;
+    background-color: #4caf50;
+    background-image: none;
+    background-repeat: repeat;
+    background-attachment: scroll;
+  }
+  
+  
+  ul.menu li a:hover {
+    background-color: #007d15;
+    background-image: none;
+    background-repeat: repeat;
+    background-attachment: scroll;
+    color: white;
+    text-decoration: none;
+  }
+  
+  ul.menu li.current_page_item a, ul.menu li.current_page_item a:hover {
+    color: white;
+    background-color: #007d15;
+    background-image: none;
+    background-repeat: repeat;
+    background-attachment: scroll;
+  }
+  ul.menu {
+    margin-top:2px;
+  }
+  #socialicons img{
+    height:25px;
+    width:auto;
+  }
+  #socialicons a{
+    position: relative;
+    top: -15%;
+  }
+  #socialicons {
+    float: right;
+  }
+	@media (max-width: 640px) {
+	  #news, #page, html {margin:0}
+	}
+	@media screen and (max-width: 61em){
+    .item {padding: 0 .5em;}
+    ul.menu {padding-left:.3em;}
+  }
+	@media (max-width: 40em) {
+	  #site-title h1 a {
+      font-size: 24px;
+      line-height: 20px;
+	  }
+	  #content {
+      margin: 0;
+      font-weight: 400;
+    }
+    .item, ul.menu li a{
+      font-family: Sans-Serif;
+    }
+    ul.menu li a {
+      padding-right: 5px;
+      padding-left: 5px;
+    }
+    #news {
+      padding-top: .2em;
+    }
+    h2 {font-size: 1.2em;}
+	}

@@ -439,6 +439,7 @@ ul.menu li.current_page_item a, ul.menu li.current_page_item a:hover {
     max-width: 75%;
   }
   ul.menu li a {
+    font-family: Sans-Serif;
     padding-right: 5px;
     padding-left: 5px;
   }
