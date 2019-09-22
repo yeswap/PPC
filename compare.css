@@ -20,13 +20,6 @@ table, caption, tbody, tfoot, thead, tr, th, td {
   vertical-align: baseline;
 }
 html {
-  background: -moz-linear-gradient(top, rgba(38, 38, 38, 0.5) 0%, rgba(38, 38, 38, 0.5) 17%, rgba(38, 38, 38, 0) 100%);
-  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(38, 38, 38, 0.5)), color-stop(17%,rgba(38, 38, 38, 0.5)), color-stop(100%,rgba(38, 38, 38, 0)));
-  background: -webkit-linear-gradient(top, rgba(38, 38, 38, 0.5) 0%,rgba(38, 38, 38, 0.5) 17%,rgba(38, 38, 38, 0) 100%);
-  background: -o-linear-gradient(top, rgba(38, 38, 38, 0.5) 0%,rgba(38, 38, 38, 0.5) 17%,rgba(38, 38, 38, 0) 100%);
-  background: -ms-linear-gradient(top, rgba(38, 38, 38, 0.5) 0%,rgba(38, 38, 38, 0.5) 17%,rgba(38, 38, 38, 0) 100%);
-  background: linear-gradient(to bottom, rgba(38, 38, 38, 0.5) 0%,rgba(38, 38, 38, 0.5) 17%,rgba(38, 38, 38, 0) 100%);
-  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#80262626', endColorstr='#00262626',GradientType=0 );
   background-color: #E0DED7;
 }
 
@@ -34,7 +27,7 @@ html {
 /* defaults for for pre WP8 IE Mobile and other browsers that ignore media queries */
 body,page {
   max-width:100%;
-  font-family: sans-serif;
+  font-family: Verdana,Helvetica,Arial,Sans-Serif;
 }
 blockquote {
   margin: 0 .25em 0 0.25em;
@@ -105,6 +98,7 @@ body {
   width:100%;
   max-width:69em;
   background-color:white;
+  overflow-y: scroll;
 }
 #updated {text-align: center;}
 
@@ -317,7 +311,6 @@ ul.menu li a {
   padding-left: 15px;
   margin-bottom : 0px;
   text-decoration: none;
-  font-family: Verdana,Helvetica,Arial,Sans-Serif;
   font-style: normal;
   font-variant: normal;
   font-size: 80%;
@@ -428,6 +421,9 @@ ul.menu li.current_page_item a, ul.menu li.current_page_item a:hover {
   th, td, #chooser {
     font-size: 13px;
   }
+  body, page{
+    font-family: sans-serif;
+  }
   #newsHeader, #chooser{
     height: auto;
   }
@@ -439,7 +435,6 @@ ul.menu li.current_page_item a, ul.menu li.current_page_item a:hover {
     max-width: 75%;
   }
   ul.menu li a {
-    font-family: Sans-Serif;
     padding-right: 5px;
     padding-left: 5px;
   }
