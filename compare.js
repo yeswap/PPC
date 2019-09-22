@@ -196,7 +196,7 @@ document.getElementById("wrap").addEventListener("scroll",function(){
         }
         Cost = parseFloat(rowMeta[eRow.cost]);
         AutopayDiscount = parseFloat(rowMeta[eRow.AutopayDiscount]);
-        if(autoPay && planLines < 2 && AutopayDiscount > 0){
+        if(autoPay && AutopayDiscount > 0){
           tempCost = Cost - AutopayDiscount;
           monCstDesc = "$" + Cost + " - $" + AutopayDiscount + " autopay discount = $" + tempCost;
         }else{
@@ -1001,7 +1001,7 @@ function addRowHandlers() {
               if (rowMeta[eRow.Hotspot_HS_Throttle] >= 1024){
                 moHotspot.innerText += " at " + rowMeta[eRow.Hotspot_HS_Throttle]/1024 + "mbps";
               }else{
-                moHotspot.innerText += " at " + savedVals[ePersist.Hotspot_HS_Throttle] + "kbps";
+                moHotspot.innerText += " at " + rowMeta[eRow.Hotspot_HS_Throttle] + "kbps";
               }
             }else if (moHotspot.innerText != "None"){
               moHotspot.innerText += " at high speeds";
