@@ -30,8 +30,8 @@ table, caption, tbody, tfoot, thead, tr, th, td {
     margin-bottom: 3pt;
   }
 	img {
-		max-width:98% !important;
-    height:auto !important;
+		max-width:98%;
+        	height:auto;
 	}
 	p {
 	  margin: 1em 0;
@@ -110,7 +110,10 @@ table, caption, tbody, tfoot, thead, tr, th, td {
     word-wrap: break-word;
     color:gray;
   }
-	body{height:100%;}
+	body{
+	  height:100%;
+	  overflow-y: scroll;
+	}
 	#news{
 	  padding:1em;
 	  margin:1.5em auto 0;
@@ -134,7 +137,6 @@ table, caption, tbody, tfoot, thead, tr, th, td {
   }
   ul.menu li {
     display: inline;
-    margin: 0;
   }
   
   ul.menu li a {
