@@ -261,9 +261,10 @@ ob_start();
       <nav>
         <ul class="menu">
           <li class="current_page_item"><a href="/">Home</a></li>
+          <li class="page_item"><a href="cm2019.html" title="Cyber Week">CyberWeek</a></li>
           <li class="page_item"><a href="/profiles/" title="Operator Profiles">Operators</a></li>
           <li class="page_item"><a href="/about.html">About</a></li>
-          <li class="page_item"><a href="/privacy.html" title="Privacy Policy">Privacy</a></li>
+          <li class="page_item hidable"><a href="/privacy.html" title="Privacy Policy">Privacy</a></li>
           <li class="page_item"><a href="/help.html">Help</a></li>
         </ul>
       </nav>

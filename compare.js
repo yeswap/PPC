@@ -70,7 +70,7 @@ document.getElementById("wrap").addEventListener("scroll",function(){
       var linesElem = document.getElementById("lines");
       var lines = parseInt(linesElem.value,10);
       var payGoCost, AutopayDiscount, bAppendMonCost, monCstDesc;
-      var savedVals, addonUsed, tempCost, thisMB, autoPay;
+      var savedVals, addonUsed, tempCost, thisMB;
       var colNetwork, rowNetwork, colPlanID, rowPlanID, planLines;
       var colMins, colTexts, colMB, iVal, colCost, Cost, colCostPeriod;
       var colPlan, costPerMo, colIsPayGo, isPayGo, CostPeriod, dataOK;
@@ -125,7 +125,8 @@ document.getElementById("wrap").addEventListener("scroll",function(){
           }
         }
         //If unlimited throttled is required, hide rows that don't have it.
-        if (needsunlimTrot){
+        colMB = row.cells[eTbl.data];
+        if (needsunlimTrot && colMB.textContent != "Unlimited"){
           if (rowMeta[eRow.overageThrottle] < 32){
             row.style.display = "none";
             continue; // jump over this row
@@ -169,7 +170,6 @@ document.getElementById("wrap").addEventListener("scroll",function(){
               rowTexts = rowTexts / 100;
             }
         }
-        colMB = row.cells[eTbl.data];
         
         if (colMB.textContent === "None") {
           rowMB = 0;
@@ -312,6 +312,9 @@ document.getElementById("wrap").addEventListener("scroll",function(){
        } // end for
     sortTable("planTbl");
     scrollToTop(table);
+    if(window.innerWidth < 976){
+      window.location.href = "#plans";
+    }
     loader.style.display = "none";
   }
   function CalcFmylPlans (cells, lines, payGoCost, mb, mins, texts, monCstDesc, autoPay){
@@ -517,8 +520,9 @@ document.getElementById("wrap").addEventListener("scroll",function(){
     return monCstDesc;
   }
 
-function tryAddon(type, cells, have, need, lines=1){
-    var ary, addonType, addonLabel, amtKey, sAddonCout;
+function tryAddon(type, cells, have, need, lines){
+  lines = lines || 1; //assign 1 if undefinedF
+  var ary, addonType, addonLabel, amtKey, sAddonCout;
   if(type == "d") {
       ary = DataAddons;
       addonType = "Data";
@@ -555,7 +559,12 @@ function tryAddon(type, cells, have, need, lines=1){
       AddonAmt = parseFloat(ary[sKey][eAddon.Amt]);
       AddonCost = parseFloat(ary[sKey][eAddon.Cost]);
       costPerMo = parseFloat(cells[eTbl.monCost].textContent);
-      if(AddonAmt + have >= need) {
+      if(AddonAmt == -1){
+        have = -1;
+        isOK = true;
+        costPerMo += (AddonCost * lines);
+      }else{
+        if(AddonAmt + have >= need) {
         if (AddOnValidity == "0") {
           // 0 == roll over
           dataNeeded = need - have;
@@ -568,6 +577,7 @@ function tryAddon(type, cells, have, need, lines=1){
         costPerMo += (AddonCost * lines);
         //Persist[sID][0][ePersist.showWork] += "+$"+AddonCost.toFixed(2)+"^"+type;
         isOK= true;
+        }
       }
       k +=1;
       sKey = sID +k;
@@ -602,7 +612,11 @@ function tryAddon(type, cells, have, need, lines=1){
           cells[amtKey].textContent = have.toFixed() + " MB";
         }
       }else{
-        cells[amtKey].textContent = have.toFixed();
+        if (have ==  -1){
+          cells[amtKey].textContent = "Unlimited";
+        }else{
+          cells[amtKey].textContent = have.toFixed();
+        }
       }
       Persist[sID][0][ePersist.plan] += " + " + addonType + " Addon";
       sAddonCout = "";
@@ -654,11 +668,11 @@ function tryAddon(type, cells, have, need, lines=1){
       sRetval = "<div><b>Data Addons:</b></div>";
     }else if(type == "m"){
       ary = MinsAddons;
-      addonType = "Minutes";
+      addonType = "minutes";
       sRetval = "<div><b>Minutes Addons:</b></div>";
     }else if (type == "t") {
       ary = TxtsAddons;
-      addonType = "Messages";
+      addonType = "messages";
       sRetval = "<div><b>Messaging Addons:</b></div>";
     }
     //check for addon
@@ -704,6 +718,9 @@ function tryAddon(type, cells, have, need, lines=1){
           AddonAmt /= 1024;
           addonType = "GB";
         }
+      }
+      if(AddonAmt == -1){
+        AddonAmt = 'unlimited';
       }
       sRetval += "<div> $" + AddonCost + " for " +AddonAmt + " " + addonType + " " + sValidity + "</div>";
       k +=1;
