@@ -223,3 +223,9 @@ table, caption, tbody, tfoot, thead, tr, th, td {
     }
     h2 {font-size: 1.2em;}
 	}
+	@media (max-width: 22em) {
+    .menu li.current_page_item {
+      display:none;
+    }
+    #menu-container{padding-bottom:7px;}
+	}
