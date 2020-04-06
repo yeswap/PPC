@@ -14,7 +14,7 @@
   
 //Get Operator
 
-  $sql = "select n.`Name` nName,NameSuffix,`Technologies`,`Bands`,`CoverageSqMiles`,`CoveragePOPs`,n.`Notes` nNotes,o.`Name` oName, `URL`, `NumberOfLines`,`Founded`,`Taxes`,o.`Notes` oNotes, URL, Phone, Twitter, Facebook, Instagram, Email, Chat, APN, Roaming, CoverageMap, SupportHours, Forum, noMMS from Operators o join Networks n  on n.NetworkID = o.NetworkID where OperatorID = ".$_GET["id"];
+  $sql = "select n.`Name` nName,NameSuffix,`Technologies`,`Bands`,`CoverageSqMiles`,`CoveragePOPs`,n.`Notes` nNotes,o.`Name` oName, `URL`, `NumberOfLines`,`Founded`,`Taxes`,o.`Notes` oNotes, URL, Phone, Twitter, Facebook, Instagram, Email, Chat, APN, Roaming, CoverageMap, SupportHours, Forum, noMMS, VoLTE, VoWiFi from Operators o join Networks n  on n.NetworkID = o.NetworkID where OperatorID = ".$_GET["id"];
 
   
   if (!$result1 = $connection->query($sql)) {
@@ -45,11 +45,15 @@
     $string = preg_replace("/(-){2,}/",'$1',$string).".html";
     return $string;
   }
-
+/*
   function stripZeros($data){
     $data = "$data"; //convert to string
     $data +=0; //strip trailing zeros
     return $data;
+  }
+*/
+  function stripZeros($n){
+      return ((floor($n) == round($n, 2)) ? number_format($n) : number_format($n, 2));
   }
   function formatPhoneNo($sPhoneNo){
     if ($sPhoneNo){
@@ -143,11 +147,14 @@
 <meta name="description" content="<?= $oName ?> plans, pricing, features, contact information, coverage map, date founded, network and bands used.">
 <meta name="keywords" content="<?= $oName ?>, plans, pricing, contact information, coverage map, date founded, network, bands" />
 <link rel="profile" href="http://gmpg.org/xfn/11" />
-<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
-<link rel="manifest" href="../site.webmanifest">
-<link rel="mask-icon" href="../safari-pinned-tab.svg" color="#5bbad5">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=rMJdgme0zY">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=rMJdgme0zY">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=rMJdgme0zY">
+<link rel="manifest" href="/site.webmanifest?v=rMJdgme0zY">
+<link rel="mask-icon" href="/safari-pinned-tab.svg?v=rMJdgme0zY" color="#5bbad5">
+<link rel="shortcut icon" href="/favicon.ico?v=rMJdgme0zY">
+<meta name="apple-mobile-web-app-title" content="PPCompare">
+<meta name="application-name" content="PPCompare">
 <meta name="msapplication-TileColor" content="#da532c">
 <meta name="theme-color" content="#ffffff">
 
@@ -211,9 +218,9 @@
 <nav>
  <ul class="menu">
    <li class="page_item"><a href="/">Home</a></li>
-   <li class="current_page_item"><a href="/profiles/" title="Operator Profiles">Operators</a></li>
+   <li class="page_item"><a href="/profiles/" title="Operator Profiles">Operators</a></li>
    <li class="page_item"><a href="/about.html">About</a></li>
-   <li class="page_item"><a href="/privacy.html" title="Privacy Policy">Privacy</a></li>
+   <li class="page_item hidable"><a href="/privacy.html" title="Privacy Policy">Privacy</a></li>
    <li class="page_item"><a href="/help.html">Help</a></li>
  </ul>
 </nav>
@@ -230,6 +237,7 @@
       echo "<h2>".$oName." Profile</h2>\n";
       
       echo "<div><b>Founded:</b> ".strftime("%G",strtotime($row["Founded"]))."</div>";
+      echo "<div><b>Network:</b> ".htmlspecialchars($row["nName"])."</div>\n";
       $nLines = $row["NumberOfLines"];
       if ($nLines >= 1000){
         $sLines = $nLines/1000 . " millon.";
@@ -277,15 +285,18 @@
         echo "<div><b>Notes:</b> ".$row["oNotes"]."</div>\n";
       }
       if($row["noMMS"]){
-        echo "<div><b>MMS supported on iOS?</b> No.</div>";
+        echo "<div><b>MMS supported on iOS?</b> No</div>";
       }else{
-        echo "<div><b>MMS supported on iOS?</b> Yes.</div>";
+        echo "<div><b>MMS supported on iOS?</b> Yes</div>";
       }
-      echo "<div><b>Network:</b> ".htmlspecialchars($row["nName"])."</div>\n";
-      echo "<div><b>Bands:</b> ".$row["Bands"]."</div>\n";
+    
+      echo '<div><b>VoLTE</b> ' .$row["VoLTE"];
+      echo ' <b>WiFi Calling:</b> '.$row["VoWiFi"]."</div>\n";
+           
+      echo "<div><b>Bands:</b> ".$row["Bands"].".</div>\n";
       echo "<div><b>Approximate Coverage:</b> ";
       echo $row["CoverageSqMiles"]." million square miles, ";
-      echo $row["CoveragePOPs"]. " million people</div>\n";
+      echo $row["CoveragePOPs"]. " million people.</div>\n";
       echo "<div>".$row["nNotes"]."</div>\n";
 
       echo "<h2>Plans</h2>\n";
@@ -338,7 +349,7 @@
         }
         echo ".";
         if ($row['AutopayDiscount']!=0){
-          echo "<b>Auto Pay Discount:</b> ".$row['AutopayDiscount'].".";
+          echo " <b>Auto Pay Discount:</b> $".$row['AutopayDiscount'].".";
         }
         echo "<br/>\n";
       switch ($row['Minutes']) {
@@ -460,7 +471,7 @@
             break;
           case $HotspotThrottle > 1:
             $sHotspot .= " then unlimited at " . $HotspotThrottle ."kbps";
-break;
+            break;
         }
         if($AllowsHotspot > 1){
           $sHotspot .= " for $" . $AllowsHotspot . "/mo";
@@ -509,28 +520,40 @@ break;
       if (!$resultDA = $connection->query($sqlDA)) {
       	die ('There was an error running DataAddons query [' . $connection->error . ']');
     	}
-
       $rowsDA = $resultDA->num_rows;
+      
       if ($rowsVA) {
         echo "<br/>\n<b>Minutes Addons:</b>";
       }
       while ($rowVA = $resultVA->fetch_array()) {
-          echo "<br/>\n" . "$". stripZeros($rowVA["Cost"]) . " for " . $rowVA["Minutes"]. " minutes ";
+          echo "<br/>\n" . "$". stripZeros($rowVA["Cost"]) . " for ";
+          if ($rowVA["Minutes"] == -1){
+            echo "unlimited minutes";
+          }else{
+            echo $rowVA["Minutes"]. " minutes ";
+          }
           echo formatValidity($rowVA["Validity"]);
       }
       if ($rowsTA) {
           echo "<br/>\n<b>Messaging Addons:</b>";
       }
       while ($rowTA = $resultTA->fetch_array()) {
-        echo "<br/>\n" . "$". stripZeros($rowTA["Cost"]) . " for " . $rowTA["Texts"]. " messages ";
+        echo "<br/>\n" . "$". stripZeros($rowTA["Cost"]) . " for ";
+        if ($rowTA["Texts"] == -1){
+          echo "unlimited messages";
+        }else{
+          echo $rowTA["Texts"]. " messages ";
+        }
         echo formatValidity($rowTA["Validity"]);
       }
-      if ($rowsDA) {
+      if ($rowsDA){
           echo "<br/>\n<b>Data Addons:</b>";
       }
       while ($rowDA = $resultDA->fetch_array()) {
         if($rowDA['Data'] > 1023){
           $data = $rowDA['Data']/1024 . ' GB';
+        }elseif($rowDA['Data'] == -1){
+          $data = 'unlimited data';
         }else{
           $data = $rowDA['Data'];
           $data = stripZeros($data) . ' MB';

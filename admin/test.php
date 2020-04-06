@@ -4,7 +4,6 @@ ini_set("display_errors", 1); # 0 - production, 1 - development
 ob_start();
 // Make sure SimplePie is included. You may need to change this to match the location of simplepie.inc.
 require_once('../simplepie/autoloader.php');
-//require_once('../admin/PPClibrary.php');
 date_default_timezone_set('America/Los_Angeles');
 
 // Original my Truncate PHP code by Chirp Internet: www.chirp.com.au
@@ -26,15 +25,6 @@ function myTruncate($string, $limit, $break=" ", $pad="...")
   return $string;
 }
 
-// Connect to the database
-$connection = new mysqli('db151c.pair.com', 'yeswap_3', 'odfft2v02cc0', 'yeswap_ppcompare');
-
-if ($connection->connect_errno > 0) {
- 	die ('Unable to connect to database [' . $connection->connect_error . ']');
-}
-
-$connection->query("SET time_zone='-07:00';");
-
 // We'll process this feed with all of the default options.
 $feed = new SimplePie();
 
@@ -44,6 +34,7 @@ $feed->set_feed_url(array(
 	'http://bestmvno.com/feed/',
 	'http://prepaidmobilephonereviews.com/feed/',
 	'http://feeds.feedburner.com/PrepaidPhoneNews?format=xml',
+	'http://cricketwireless.mediaroom.com/news-releases?pagetemplate=rss',
 	'https://www.tmonews.com/tag/prepaid/feed/',
 	'https://www.tmonews.com/tag/metropcs/feed/',
 	'http://blog.freedompop.com/feed/',
@@ -53,7 +44,7 @@ $feed->set_feed_url(array(
 	'http://www.prepaidreviews.com/blog/feed/atom/'
 ));
 
-$feed->set_cache_duration (600); //set the cache duration to 10 minutes
+$feed->set_cache_duration (600); //The cache duration
 $feed->set_useragent('Mozilla/5.0 (X11; CrOS armv7l 9765.85.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.123 Safari/537.36');
 
 // Run SimplePie.
@@ -71,50 +62,42 @@ foreach ($feed->get_items() as $item) {
 	// Calculate a two weeks ago
 	$oldnews = time() - (14*24*60*60);
 
-	// Compare the timestamp of the feed item with two weeks ago.
+	// Compare the timestamp of the feed item with a week ago.
 	if ($item->get_date('U') > $oldnews) {
-		// If the item was posted within the last 2 weeks, store the item in our array we set up.
-		// Check if item is already in the database
-    $hashedID = md5($item->get_id());
-    $sql = "SELECT * FROM NewsItems WHERE hashedID ='$hashedID' LIMIT 1";
-    if (!$result = $connection->query($sql)) {
-  	    die ('There was an error running if exists query[' . $connection->error . ']');
-    }
-    if(mysqli_num_rows($result) == 0){
-      //echo "not found<br/>";
-      // It's a new item, add it to the table
-      //$content= $connection->real_escape_string(trim(myTruncate($item->get_content(), 220)));
-      //echo $content;
-  		$content = '<blockquote>'.$connection->real_escape_string(trim(myTruncate($item->get_content(), 220))).'</blockquote>';
+		// If the item was posted within the last week, store the item in our array we set up.
 
-  		//Get the author if she exists
-  		if ($author = $item->get_author()){
-  	    $by = $author->get_name();
-  		}else{
-  		  $creator = $item->get_item_tags(SIMPLEPIE_NAMESPACE_DC_11, 'creator');
-  		  $by = $connection->real_escape_string($creator[0]['data']);
-  		}
-  		
-  		$title = $connection->real_escape_string($item->get_feed()->get_title());
-	    $permalink = $connection->real_escape_string($item->get_permalink());
-	    $subject = $connection->real_escape_string($item->get_title());
-	    $date = $item->get_date('Y-m-d H:i');
+  	
+		$content = '<blockquote>'.myTruncate($item->get_content(), 220).'</blockquote>';
+		
+		//Get the author if she exists
+		if ($author = $item->get_author()){
+	    $by = $author->get_name();
+		}else{
+		  $creator = $item->get_item_tags(SIMPLEPIE_NAMESPACE_DC_11, 'creator');
+		  $by = $creator[0]['data'];
+		}
 
-      $sql = "INSERT INTO NewsItems(HashedID,title,permalink,creator,subject,date,	content) VALUES ('$hashedID', '$title', '$permalink', '$by', '$subject', '$date', '$content')";
-      if (!$result = $connection->query($sql)) {
-        echo $sql . '<br />';
-  	    die ('There was an error running INSERT query[' . $connection->error . ']');
-      }
-    }
+    //add the item to the array
+	  $news[] = array(
+	  "title"=>$item->get_feed()->get_title(),
+	  "permalink"=>$item->get_permalink(),
+	  "creator"=>$by,
+	  "subject" =>$item->get_title(),
+	  "date"=>$item->get_date('U'),
+	  "content"=>$content);
   }
 }
+//Get user entered items from newsitems table
+$connection = new mysqli('db151c.pair.com', 'yeswap_3', 'odfft2v02cc0', 'yeswap_ppcompare');
 
-// Retrieve and display items published in the last two weeks
-
+if ($connection->connect_errno > 0) {
+ 	die ('Unable to connect to database [' . $connection->connect_error . ']');
+}
+$connection->query("SET time_zone='-07:00';");
 $sql = "SELECT title,permalink,creator,subject,UNIX_TIMESTAMP(date) as date,content FROM NewsItems WHERE date BETWEEN ADDDATE(NOW(),INTERVAL -2 WEEK) AND NOW()";
 
 if (!$result = $connection->query($sql)) {
-  	die ('There was an error running SELECT query[' . $connection->error . ']');
+  	die ('There was an error running query[' . $connection->error . ']');
 }
 $rows = $result->num_rows;
 $cols = $result->field_count;
@@ -185,15 +168,11 @@ ob_start();
 <title>Compare Prepaid Cellphone Plans | PrepaidCompare</title>
 <meta name="description" content="Find the Best Prepaid Plan for Any Budget">
 <link rel="profile" href="http://gmpg.org/xfn/11" />
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=rMJdgme0zY">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png?v=rMJdgme0zY">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png?v=rMJdgme0zY">
-<link rel="manifest" href="/site.webmanifest?v=rMJdgme0zY">
-<link rel="mask-icon" href="/safari-pinned-tab.svg?v=rMJdgme0zY" color="#5bbad5">
-<link rel="shortcut icon" href="/favicon.ico?v=rMJdgme0zY">
-<link rel="manifest" href="site.webmanifest">
-<meta name="apple-mobile-web-app-title" content="PPCompare">
-<meta name="application-name" content="PPCompare">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 <meta name="msapplication-TileColor" content="#da532c">
 <meta name="theme-color" content="#ffffff">
 <meta name="google-site-verification" content="DeM5wQ7YdbcrTzfRPF1HYi7TXEud4qUszziPyAYqQJk" />
@@ -234,7 +213,8 @@ ob_start();
        "sameAs" : [ "https://www.facebook.com/wapreview",
       "https://www.reddit.com/user/yeswap",
       "https://twitter.com/yeswap",
-      "https://www.howardforums.com/member.php/262421-Yeswap"]
+      "https://www.howardforums.com/member.php/262421-Yeswap",
+      "https://plus.google.com/u/0/+DennisBournique"]
     },
   "description" : "A comprehensive database of prepaid mobile operators and plans that can be searched and filtered to show the lowest priced plans for any number of minutes, texts, data and lines of service",
   "publisher": "PrepaidCompare"
@@ -251,9 +231,9 @@ ob_start();
     <div id="main">
     <div id="branding" role="banner">
     <div id="site-title">
-      <span id="left-menu"><a id="showPlans" href="#plans">Plans</a></span>
+      <span id="left-menu"><a href="#plans">Plans</a></span>
       <h1><a href="http://prepaidcompare.net/" title="Prepaid Compare" rel="home">prepaid<span style="color:#007d15;">compare</span></a></h1>
-      <span id="right-menu"><a id="showNews" href="#news">News</a></span>
+      <span id="right-menu"><a href="#news">News</a></span>
     </div>
     <div class="separator"></div>
     </div><!-- #branding -->
@@ -293,8 +273,6 @@ ob_start();
           <span class="moItem">Data:</span> <span id="moData"></span></div>
           <div><span class="moItem">Unlimited Throttled Data?</span> <span id="moThrotld"></span></div>
           <div><span class="moItem">MMS supported on iOS?</span> <span id="moIosMms"></span></div>
-          <div><span class="moItem">VoLTE?</span> <span id="moVoLTE"></span>
-          <span class="moItem">WiFi Calling?</span> <span id="moVoWiFi"></span></div>
           <div><span class="moItem">Hotspot:</span> <span id="moHotspot"></span></div>
           <div><span class="moItem">Domestic Roaming:</span> <span id="moRoaming"></span></div>
           <div><span class="moItem">PayGo?</span>  <span id="moIsPayGo"></span></div>
@@ -313,6 +291,7 @@ ob_start();
       include "news.inc.php";
 ?>
     </div>
+      <hr class="mobileBar">
       <div id="plans"></div>
   	  <div id="primary">
 		  <div id="content" role="main">

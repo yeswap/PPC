@@ -7,7 +7,7 @@ document.getElementById("wrap").addEventListener("scroll",function(){
     
     var ePersist = {monCost:0,mins:1,txts:2,data:3};
     
-    var eRow = {plan:0,cost:1,costType:2,overageThrottle:3, isPayGo:4, HasRollover:5, LineFee:6, multiLine:7, notes:8, oprID:9, AllowsHotspot:10, Hotspot_HS_Limit:11, Hotspot_HS_Throttle:12, HotspotThrottle:13, TextRoaming:14, VoiceRoaming:15, DataRoaming:16, AutopayDiscount:17, MMS:18, showWork:19};
+    var eRow = {plan:0,cost:1,costType:2,overageThrottle:3, isPayGo:4, HasRollover:5, LineFee:6, multiLine:7, notes:8, oprID:9, AllowsHotspot:10, Hotspot_HS_Limit:11, Hotspot_HS_Throttle:12, HotspotThrottle:13, TextRoaming:14, VoiceRoaming:15, DataRoaming:16, AutopayDiscount:17, MMS:18, showWork:19, noVoLTE:20};
     
     var eFmlyPln = {Cost:0, MinsShared:1, TxtsShared:2, DataShared:3, AutopayDiscount:4};
     
@@ -43,7 +43,23 @@ document.getElementById("wrap").addEventListener("scroll",function(){
         return -1;
       };
     }
+    
+    function showPlans(){
+      document.getElementById("primary").style.display="block";
+      document.getElementById("secondary").style.display="none";
+    }
+    
+    function showNews(){
+      document.getElementById("secondary").style.display="block";
+      document.getElementById("primary").style.display="none";
+    }
 
+    function showBoth(){
+      if (window.innerWidth >= 976) {
+        document.getElementById("secondary").style.display="block";
+        document.getElementById("primary").style.display="block";
+      }
+    }
 
     var loader = document.getElementById('loader');
     function showMsg() {
@@ -75,6 +91,7 @@ document.getElementById("wrap").addEventListener("scroll",function(){
       var colMins, colTexts, colMB, iVal, colCost, Cost, colCostPeriod;
       var colPlan, costPerMo, colIsPayGo, isPayGo, CostPeriod, dataOK;
       var minsOK, txtsOK, nLineFee, calcedCost, tmpCost, rowMeta;
+      var eOprMeta = {URL:0,Taxes:1,Notes:2,Suffix:3,VoLTE:4, VoWiFi:5};
       
       
       if (document.getElementById("ATTyes").checked){
@@ -94,6 +111,8 @@ document.getElementById("wrap").addEventListener("scroll",function(){
       var needsIosMMS = document.getElementById("iosMMS").checked;
       var needsunlimTrot = document.getElementById("unlimTrot").checked;
       var autoPay = document.getElementById("Autopay").checked;
+      var needsVoLTE = document.getElementById("VoLTE").checked;
+      var needsVoWiFi = document.getElementById("VoWiFi").checked;
 
       // loop thru table calculating cost and hiding rows that don't meet needs.
     
@@ -109,7 +128,7 @@ document.getElementById("wrap").addEventListener("scroll",function(){
         //console.log (rowPlanID);
         savedVals = Persist[rowPlanID][0];
         rowMeta = RowAry[rowPlanID][0];
-
+        var OprMetaRow = OprMeta[rowMeta[eRow.oprID]];
         //Check if user has excluded this row's network
         colNetwork = row.cells[eTbl.netw];
         rowNetwork = colNetwork.textContent;
@@ -120,6 +139,18 @@ document.getElementById("wrap").addEventListener("scroll",function(){
         //If iOS MMS is required, hide rows that don't have it.
         if (needsIosMMS){
           if (rowMeta[eRow.MMS] === 0){
+            row.style.display = "none";
+            continue; // jump over this row
+          }
+        }
+        if (needsVoLTE){
+          if (rowMeta[eRow.noVoLTE] === 1 || OprMetaRow[eOprMeta.VoLTE] === 0 ){
+            row.style.display = "none";
+            continue; // jump over this row
+          }
+        }
+        if (needsVoWiFi){
+          if (rowMeta[eRow.noVoLTE] === 1 || OprMetaRow[eOprMeta.VoWiFi] === 0){
             row.style.display = "none";
             continue; // jump over this row
           }
@@ -840,6 +871,8 @@ var moCostLbl = document.getElementById('moCostLbl');
 var moLineFee = document.getElementById('moLineFee');
 var moRoaming = document.getElementById('moRoaming');
 var moIosMms = document.getElementById('moIosMms');
+var moVoLTE = document.getElementById('moVoLTE');
+var moVoWiFi = document.getElementById('moVoWiFi');
 var moProfile = document.getElementById('moProfile');
 var moFmlyPlns = document.getElementById('moFmlyPlns');
 var moAutopay = document.getElementById('moAutopay');
@@ -888,6 +921,10 @@ function pageName(string){
   return string;
 }
 function addRowHandlers() {
+  document.getElementById("showPlans").onclick = showPlans;
+  document.getElementById("showNews").onclick = showNews;
+  window.addEventListener("resize", showBoth);
+  
   var table = document.getElementsByTagName('TABLE')[0];
   var rows = table.getElementsByTagName("tr");
   for (var i = 0; i < rows.length; i++) {
@@ -899,7 +936,7 @@ function addRowHandlers() {
           var fullURL, URLNoProtocol, sURL,retVal;
           var calcCost='', CostPeriod;
           var cells = row.getElementsByTagName("td");
-          var eOprMeta = {URL:0,Taxes:1,Notes:2,Suffix:3};
+          var eOprMeta = {URL:0,Taxes:1,Notes:2,Suffix:3,VoLTE:4, VoWiFi:5};
           var rowPlanID = cells[eTbl.ID].innerHTML;
           var savedVals = Persist[rowPlanID][0];
           var rowMeta = RowAry[rowPlanID][0];
@@ -999,6 +1036,18 @@ function addRowHandlers() {
             moIosMms.innerText = 'Yes';
           }else{
             moIosMms.innerText = 'No';
+          }
+
+          if (OprMetaRow[eOprMeta.VoLTE] === 1){
+            moVoLTE.innerText = 'Yes, see Carrier Profile for details.';
+          }else{
+            moVoLTE.innerText = 'No.';
+          }
+
+          if (OprMetaRow[eOprMeta.VoWiFi] === 1){
+            moVoWiFi.innerText = 'Yes, see Carrier Profile for details.';
+          }else{
+            moVoWiFi.innerText = 'No.';
           }
 
           if(rowMeta[eRow.AllowsHotspot]){

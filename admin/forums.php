@@ -13,7 +13,6 @@ $feed->set_feed_url(array(
 	'http://www.howardforums.com/external.php?type=RSS1&forumids=518&lastpost=true',
 	'http://www.howardforums.com/external.php?type=RSS1&forumids=234&lastpost=true',
 	'http://www.howardforums.com/external.php?type=RSS1&forumids=347&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=726&lastpost=true',
 	'http://www.howardforums.com/external.php?type=RSS1&forumids=527&lastpost=true',
 	'http://www.howardforums.com/external.php?type=RSS1&forumids=364&lastpost=true',
 	'http://www.howardforums.com/external.php?type=RSS1&forumids=335&lastpost=true',
@@ -23,22 +22,10 @@ $feed->set_feed_url(array(
 	'http://www.howardforums.com/external.php?type=RSS1&forumids=336&lastpost=true',
 	'http://www.howardforums.com/external.php?type=RSS1&forumids=344&lastpost=true',
 	'http://www.howardforums.com/external.php?type=RSS1&forumids=551&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=711&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=712&lastpost=true',
 	'http://www.howardforums.com/external.php?type=RSS1&forumids=576&lastpost=true',
 	'http://www.howardforums.com/external.php?type=RSS1&forumids=714&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=721&lastpost=true',
 	'http://www.howardforums.com/external.php?type=RSS1&forumids=702&lastpost=true',
 	'http://www.howardforums.com/external.php?type=RSS1&forumids=739&lastpost=true',
-	'https://www.reddit.com/r/NoContract/.rss',
-	'https://www.reddit.com/r/TracFone/.rss',
-	'https://www.reddit.com/r/StraightTalk/.rss',
-	'https://www.reddit.com/r/freedompop/.rss',
-	'https://www.reddit.com/r/CricketWireless/.rss',
-	'https://www.reddit.com/r/MetroPCS/.rss',
-	'https://www.reddit.com/r/GoogleFi/.rss',
-	'https://www.reddit.com/r/ting/.rss',
-	'https://www.reddit.com/r/mintmobile/.rss',
 	'http://micallen.freeforums.org/feed.php'
 ));
 
@@ -64,7 +51,7 @@ $feed->handle_content_type();
 	*{font-family:sans-serif;}
 	img {
 		max-width:98% !important;
-        	height:auto !important;
+    height:auto !important;
 	}
 	hr.bar {
 		color: blue;
@@ -79,6 +66,8 @@ $feed->handle_content_type();
 	}
 	p, div, a {
 	  overflow-wrap: break-word;
+	  word-wrap: break-word;
+	  word-break: break-word;
 	}
 	#masthead{
 	  text-align: center;
@@ -123,15 +112,15 @@ $new = array();
 // Loop through all of the items in the feed
 foreach ($feed->get_items() as $item) {
 
-	// Calculate 24 hours ago
-	$yesterday = time() - (24*60*60);
+	// Calculate a two weeks ago
+	$oldnews = time() - (14*24*60*60);
+	
+	// Compare the timestamp of the feed item with two weeks ago.
+	if ($item->get_date('U') > $oldnews) {
 
-	// Compare the timestamp of the feed item with 24 hours ago.
-	//if ($item->get_date('U') > $yesterday) {
-
-		// If the item was posted within the last 24 hours, store the item in our array we set up.
+		// If the item was posted within the last 2 weeks, store the item in our array we set up.
 		$new[] = $item;
-	//}
+	}
 }
 
 // Loop through all of the items in the new array and display whatever we want.

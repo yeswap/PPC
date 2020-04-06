@@ -14,7 +14,6 @@ $feed->set_feed_url(array(
 	'http://feeds.feedburner.com/AttAllCategoriesRssFeeds?format=xml',
 	'https://www.verizon.com/about/news/Verizon-news.xml',
 	'https://feeds.feedburner.com/AndroidPolice?format=xml',
-	'https://feeds.feedburner.com/TheBoyGeniusReport?format=xml',
 	'https://www.ctwdistribution.com/feed.xml',
 	'https://www.t-mobile.com/content/t-mobile/corporate/news.rss.xml',
 	'http://www.fiercewireless.com/feed',
@@ -36,7 +35,6 @@ $feed->set_feed_url(array(
 	'https://daringfireball.net/feeds/main?',
 	'https://www.twigby.com/blog/feed/',
 	'https://www.theverge.com/rss/index.xml',
-	'https://techcrunch.com/feed/',
 	'http://cricketwireless.mediaroom.com/news-releases?pagetemplate=rss',
 	'https://bestcellular.com/feed/',
 	'https://www.consumercellular.com/blog/feed/'
@@ -77,8 +75,10 @@ $feed->handle_content_type();
 	  padding:0;
 	  margin:0;
 	}
-		p, div, a {
+	p, div, a {
 	  overflow-wrap: break-word;
+	  word-wrap: break-word;
+	  word-break: break-word;
 	}
 	#masthead{
 	  text-align: center;

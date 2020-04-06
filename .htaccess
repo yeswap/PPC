@@ -1,0 +1,9 @@
+# pair Networks: Replaced 'IndexIgnore *' with 'Options -Indexes' on 09/13/2017
+Options -Indexes
+ErrorDocument 404 /404page.html
+# Set up Expires and Cache Control headers
+<IfModule mod_headers.c>
+  Header set Cache-Control "no-cache, no-store, must-revalidate"
+  Header set Pragma "no-cache"
+  Header set Expires -1
+</IfModule>

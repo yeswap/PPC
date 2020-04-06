@@ -57,6 +57,10 @@ ob_start();
         <label for="iosMMS">iOS MMS</label></span>
         <span class="chk"><input id="unlimTrot" type="checkbox"/>
         <label for="unlimTrot">Unlim slow data</label></span>
+        <span class="chk"><input id="VoLTE" type="checkbox"/>
+        <label for="VoLTE">VoLTE</label></span>
+        <span class="chk"><input id="VoWiFi" type="checkbox"/>
+        <label for="VoWiFi">WiFi Calling</label></span>
       </p>
       <p>
         <span class="chk"><input id="Autopay" type="checkbox"/>
@@ -202,6 +206,8 @@ error_reporting(E_ALL);
           const Taxes = 1;
           const Notes = 2;
           const NameSuffix = 3;
+          const VoLTE = 4;
+          const VoWiFi = 5;
         }
         $sql = "select * from Operators order by OperatorID";
         if (!$result = $connection->query($sql)) {
@@ -217,6 +223,16 @@ error_reporting(E_ALL);
             $TmpAry[eOpr::Taxes] = $row["Taxes"];
             $TmpAry[eOpr::Notes] = $row["Notes"];
             $TmpAry[eOpr::NameSuffix] = $row["NameSuffix"];
+            if($row["VoLTE"] === "Not supported."){
+              $TmpAry[eOpr::VoLTE] = 0;
+            }else{
+              $TmpAry[eOpr::VoLTE] = 1;
+            }
+            if($row["VoWiFi"] === "Not supported."){
+              $TmpAry[eOpr::VoWiFi] = 0;
+            }else{
+              $TmpAry[eOpr::VoWiFi] = 1;
+            }            
             $OprMetaAry[$row["OperatorID"]] = $TmpAry;
           }
           return $OprMetaAry;
@@ -228,7 +244,7 @@ error_reporting(E_ALL);
         die ('Unable to connect to database [' . $connection->connect_error . ']');
       }
     //  $sql = "SELECT * FROM Plans";
-      $sql = "select Plans.ID as PlanID, Plans.MonthlyCost as MonthlyCost, Operators.Name as Operator, Networks.Name as Network, Plans.Name as Plan, Cost, CostType, Minutes, Texts, AppleSupportLevel & 1=1 as MMS, Data, OverageThrottle, Plans.Notes as Notes, isPayGo, HasRollover, LineFee, MultiLine, Plans.OperatorID, AllowsHotspot, Hotspot_HS_Limit, Hotspot_HS_Throttle, HotspotThrottle, TextRoaming, VoiceRoaming, DataRoaming, AutopayDiscount from Plans join Operators on Plans.OperatorID = Operators.OperatorID join Networks on Operators.NetworkID = Networks.NetworkID order by MonthlyCost, Operator, Network";
+      $sql = "select Plans.ID as PlanID, Plans.MonthlyCost as MonthlyCost, Operators.Name as Operator, Networks.Name as Network, Plans.Name as Plan, Cost, CostType, Minutes, Texts, AppleSupportLevel & 1=1 as MMS, Data, OverageThrottle, Plans.Notes as Notes, isPayGo, HasRollover, LineFee, MultiLine, Plans.OperatorID, AllowsHotspot, Hotspot_HS_Limit, Hotspot_HS_Throttle, HotspotThrottle, TextRoaming, VoiceRoaming, DataRoaming, AutopayDiscount, NoVoLTE from Plans join Operators on Plans.OperatorID = Operators.OperatorID join Networks on Operators.NetworkID = Networks.NetworkID order by MonthlyCost, Operator, Network";
       if (!$result = $connection->query($sql)) {
           die ('There was an error running query[' . $connection->error . ']');
       }
@@ -416,6 +432,7 @@ error_reporting(E_ALL);
       $tempRow[]=$row['AutopayDiscount'];
       $tempRow[]=$row['MMS']; //iosMMS support
       $tempRow[]=''; // ShowWork
+      $tempRow[]=$row['NoVoLTE'];
       $rowMeta[$PlanID][]=$tempRow;
       $rowPersist[$PlanID][]=$tempPersist;
       }

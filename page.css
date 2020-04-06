@@ -26,6 +26,12 @@ table, caption, tbody, tfoot, thead, tr, th, td {
   a, a:hover, a:active {
       color: #007d15;
   }
+  h3 {
+    margin-top: 1em;
+  }
+  ul {
+    padding-left: 1em;
+  }
   #branding{
     margin-bottom: 3pt;
   }
@@ -222,6 +228,9 @@ table, caption, tbody, tfoot, thead, tr, th, td {
       padding-top: .2em;
     }
     h2 {font-size: 1.2em;}
+      .hidable  {
+      display:none;
+    }
 	}
 	@media (max-width: 22em) {
     .menu li.current_page_item {
