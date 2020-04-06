@@ -1,6 +1,7 @@
 {
     "name": "Prepaid Compare",
-    "short_name": "",
+    "short_name": "PPC",
+    "start_url": "index.html",
     "icons": [
         {
             "src": "/android-chrome-192x192.png?v=rMJdgme0zY",
@@ -15,7 +16,6 @@
     ],
     "theme_color": "#007d15",
     "background_color": "#007d15",
-    "display": "browser",
-    "scope": "/",
-    "start_url": "/"
+    "display": "standalone",
+    "scope": "/"
 }
