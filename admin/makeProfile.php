@@ -497,7 +497,7 @@
             $sFP .= ", $".$rowFP["AutoPayDiscount"]. " autopay discount";
           }
           if ($rowFP["Notes"]){
-            $sNotes = "<br><b>Family Plan Notes: </b>".$rowFP["Notes"];
+            $sNotes = "<br><b>Family Plan Notes: </b>".nl2br(trim($rowFP["Notes"]));
           }
           $sBefore = "<br/>";
         }
