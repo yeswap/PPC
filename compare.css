@@ -374,14 +374,16 @@ ul.menu li.current_page_item a, ul.menu li.current_page_item a:hover {
     width: 68%;
     float: right;
     overflow: auto;
+    display:block;
   }
   #secondary {
     float: left;
     width: 30%;
     min-width:300px;
     overflow: auto;
+    display:block;
   }
-  .mobileBar, #left-menu, #right-menu {display:none}
+  #left-menu, #right-menu {display:none}
 }
 /* less than 976px single column primary and secondary */
 @media screen and (max-width: 61em){
@@ -412,7 +414,7 @@ ul.menu li.current_page_item a, ul.menu li.current_page_item a:hover {
     margin-top:0;
   }
 
-  .mobileBar, #left-menu, #right-menu {
+  #left-menu, #right-menu {
     display:block;
   }
 }

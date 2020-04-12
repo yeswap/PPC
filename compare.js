@@ -853,6 +853,7 @@ var modal = document.getElementById('myModal');
 var moBrand = document.getElementById('moBrand');
 var moPlan = document.getElementById('moPlan');
 var moURL = document.getElementById('moURL');
+var moOprNotes = document.getElementById('moOprNotes');
 var moNetw = document.getElementById('moNetw');
 var moCost = document.getElementById('moCost');
 var moCostType = document.getElementById('moCostTyp');
@@ -998,6 +999,9 @@ function addRowHandlers() {
           }else{
             moCostType.innerText = CostPeriod;
           }
+          if (OprMetaRow[eOprMeta.Notes]){
+            moOprNotes.innerHTML = "<b>Operator Notes:</b> "+ OprMetaRow[eOprMeta.Notes];
+          }
           var nAutoPay = parseFloat(rowMeta[eRow.AutopayDiscount]);
           moAutopay.innerHTML = "";
           if (nAutoPay){
@@ -1132,12 +1136,8 @@ function addRowHandlers() {
             moFmlyPlns.innerHTML = "";
           }
           moNotes.innerHTML = rowMeta[eRow.notes];
-          if(moNotes.innerHTML){moNotes.innerHTML += " ";}
-          if (OprMetaRow[eOprMeta.Notes]){
-            moNotes.innerHTML += OprMetaRow[eOprMeta.Notes];
-          }
           if(moNotes.innerHTML){
-            moNotes.innerHTML = "<b>Notes:</b> " + moNotes.innerHTML;
+            moNotes.innerHTML = "<b>Plan Notes:</b> " + moNotes.innerHTML;
           }
           retVal = getAddonsList("m",cells[eTbl.ID].innerHTML );
           retVal += getAddonsList("t",cells[eTbl.ID].innerHTML );

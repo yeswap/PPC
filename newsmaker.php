@@ -280,8 +280,10 @@ ob_start();
           <span class="close">&times;</span>
           <p id="moTitle"><b><span id="moBrand">Brand</span>
           <i><span id="moPlan"></span></i></b></p>
-          <div class="moItem">Website: <span id="moURL"></span></div>
           <div><span class="moItem" >Network:</span> <span id="moNetw"></span></div>
+          <div class="moItem">Website: <span id="moURL"></span></div>
+          <div id="moOprNotes"></div>
+          <hr />
           <div><span id ="moCostLbl" class="moItem"></span><span id="moCost"></span>
           per <span id="moCostTyp"></span></div>
           <div id = "moAutopay"></div>
@@ -293,8 +295,8 @@ ob_start();
           <span class="moItem">Data:</span> <span id="moData"></span></div>
           <div><span class="moItem">Unlimited Throttled Data?</span> <span id="moThrotld"></span></div>
           <div><span class="moItem">MMS supported on iOS?</span> <span id="moIosMms"></span></div>
-          <div><span class="moItem">VoLTE?</span> <span id="moVoLTE"></span>
-          <span class="moItem">WiFi Calling?</span> <span id="moVoWiFi"></span></div>
+          <div><span class="moItem">VoLTE?</span> <span id="moVoLTE"></span></div>
+          <div><span class="moItem">WiFi Calling?</span> <span id="moVoWiFi"></span></div>
           <div><span class="moItem">Hotspot:</span> <span id="moHotspot"></span></div>
           <div><span class="moItem">Domestic Roaming:</span> <span id="moRoaming"></span></div>
           <div><span class="moItem">PayGo?</span>  <span id="moIsPayGo"></span></div>
