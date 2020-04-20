@@ -1076,12 +1076,14 @@ function addRowHandlers() {
             }else if (moHotspot.innerText != "None"){
               moHotspot.innerText += " at high speeds";
             }
-            if(savedVals[ePersist.HotspotThrottle]){
+            if(rowMeta[eRow.HotspotThrottle]){
               if (rowMeta[eRow.HotspotThrottle >= 1024]){
                 moHotspot.innerText += " then unlimited at " + rowMeta[eRow.HotspotThrottle]/1024 + "mbps";
               }else{
                 moHotspot.innerText += " then unlimited at " + rowMeta[eRow.HotspotThrottle] + "kbps";
               }
+            }else if(Hotspot_HS_Limit !== -1){
+              moHotspot.innerText += ", hard capped";
             }
             if(rowMeta[eRow.AllowsHotspot] > 1){
               moHotspot.innerText += " for $" + rowMeta[eRow.AllowsHotspot] + "/mo";

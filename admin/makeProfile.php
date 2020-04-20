@@ -472,6 +472,8 @@
           case $HotspotThrottle > 1:
             $sHotspot .= " then unlimited at " . $HotspotThrottle ."kbps";
             break;
+          case $Hotspot_HS_Limit != -1:
+            $sHotspot .= ", hardcapped";
         }
         if($AllowsHotspot > 1){
           $sHotspot .= " for $" . $AllowsHotspot . "/mo";
