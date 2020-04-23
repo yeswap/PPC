@@ -290,8 +290,8 @@
         echo "<div><b>MMS supported on iOS?</b> Yes</div>";
       }
     
-      echo '<div><b>VoLTE</b> ' .$row["VoLTE"];
-      echo ' <b>WiFi Calling:</b> '.$row["VoWiFi"]."</div>\n";
+      echo '<div><b>VoLTE</b> ' .$row["VoLTE"]."</div>\n";;
+      echo ' <div><b>WiFi Calling:</b> '.$row["VoWiFi"]."</div>\n";
            
       echo "<div><b>Bands:</b> ".$row["Bands"].".</div>\n";
       echo "<div><b>Approximate Coverage:</b> ";
