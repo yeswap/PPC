@@ -1001,6 +1001,8 @@ function addRowHandlers() {
           }
           if (OprMetaRow[eOprMeta.Notes]){
             moOprNotes.innerHTML = "<b>Operator Notes:</b> "+ OprMetaRow[eOprMeta.Notes];
+          }else{
+            moOprNotes.innerHTML = '';
           }
           var nAutoPay = parseFloat(rowMeta[eRow.AutopayDiscount]);
           moAutopay.innerHTML = "";
@@ -1140,6 +1142,8 @@ function addRowHandlers() {
           moNotes.innerHTML = rowMeta[eRow.notes];
           if(moNotes.innerHTML){
             moNotes.innerHTML = "<b>Plan Notes:</b> " + moNotes.innerHTML;
+          }else{
+            moNotes.innerHTML = "";
           }
           retVal = getAddonsList("m",cells[eTbl.ID].innerHTML );
           retVal += getAddonsList("t",cells[eTbl.ID].innerHTML );
