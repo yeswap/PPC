@@ -1,11 +1,28 @@
 <?php
 error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
 ini_set("display_errors", 1); # 0 - production, 1 - development
+//write PPC RSS feed headers
+$rssFile=fopen("feed.rss", "w");
+fwrite($rssFile, '<?xml version="1.0" encoding="utf-8"?>'."\n");
+fwrite($rssFile, '<rss version="2.0"  xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">'."\n");
+fwrite($rssFile, "<channel>\n");
+fwrite($rssFile, "<title>Prepaid News RSS Feed</title>\n");
+fwrite($rssFile, "<link>https://prepaidcompare.net/</link>\n");
+fwrite($rssFile,'<atom:link href="https://prepaidcompare.net/feed.rss" rel="self" type="application/rss+xml" />'."\n");
+fwrite($rssFile, "<description>The latest US prepaid mobile news from around the web</description>\n");
 ob_start();
 // Make sure SimplePie is included. You may need to change this to match the location of simplepie.inc.
 require_once('../simplepie/autoloader.php');
 //require_once('../admin/PPClibrary.php');
 date_default_timezone_set('America/Los_Angeles');
+
+function replace_tags($string){
+  //replace tags with a single space (code from https://stackoverflow.com/questions/12824899)
+$spaceString = str_replace( '<', ' <',$string );
+$doubleSpace = strip_tags( $spaceString );
+$singleSpace = str_replace( '  ', ' ', $doubleSpace );
+return $singleSpace;
+}
 
 // Original my Truncate PHP code by Chirp Internet: www.chirp.com.au
 // Please acknowledge use of this code by including this header.
@@ -13,7 +30,7 @@ date_default_timezone_set('America/Los_Angeles');
 function myTruncate($string, $limit, $break=" ", $pad="...")
 {
   // return with no change if string is shorter than $limit
-  $string = strip_tags($string);
+  $string = replace_tags($string);
   if(strlen($string) <= $limit) return $string;
 
   // is $break present between $limit and the end of the string?
@@ -111,7 +128,7 @@ foreach ($feed->get_items() as $item) {
 
 // Retrieve and display items published in the last two weeks
 
-$sql = "SELECT title,permalink,creator,subject,UNIX_TIMESTAMP(date) as date,content FROM NewsItems WHERE date BETWEEN ADDDATE(NOW(),INTERVAL -2 WEEK) AND NOW()";
+$sql = "SELECT NewsItemID,title,permalink,creator,subject,UNIX_TIMESTAMP(date) as date,content FROM NewsItems WHERE date BETWEEN ADDDATE(NOW(),INTERVAL -2 WEEK) AND NOW()";
 
 if (!$result = $connection->query($sql)) {
   	die ('There was an error running SELECT query[' . $connection->error . ']');
@@ -121,6 +138,7 @@ $cols = $result->field_count;
 if($rows > 0) {
   while ($row = $result->fetch_array()) {
 	  $news[] = array(
+    "guid"=>$row['NewsItemID'],
 	  "title"=>$row['title'],
 	  "permalink"=>$row['permalink'],
 	  "creator"=>$row['creator'],
@@ -144,6 +162,15 @@ echo "<div id='newswrap'>\n";
 
 // Loop through all of the items in the new array and display whatever we want.
 	foreach($news as $item) {
+    fwrite($rssFile, "<item>\n");
+    fwrite($rssFile, "<title><![CDATA[".$item["title"]." - ".$item["subject"]."]]></title>\n");
+    fwrite($rssFile, "<link>".htmlentities($item["permalink"])."</link>\n");
+    fwrite($rssFile, '<guid isPermaLink="false">prepaidcompare.net/'.$item["guid"]."</guid>\n");
+    fwrite($rssFile, '<dc:creator>'.htmlentities($item["creator"])."</dc:creator>\n");
+    fwrite($rssFile, "<description><![CDATA[".htmlentities(strip_tags($item["content"]))."]]></description>\n");
+    fwrite($rssFile, "<content:encoded><![CDATA[".$item["content"]."]]></content:encoded>\n");
+    fwrite($rssFile, "<pubDate>".date('r', $item["date"])."</pubDate>\n");
+    fwrite($rssFile, "</item>\n");
 ?>
 		<div class="item">
 			<b><?php echo $item["title"]; ?> - <a href="<?php echo $item["permalink"]; ?>"><?php echo $item["subject"]; ?></a></b>
@@ -158,6 +185,9 @@ echo "<div id='newswrap'>\n";
  		<hr class="bar"/>
 <?php }
 echo "</div>\n";
+fwrite($rssFile, "</channel>\n");
+fwrite($rssFile, "</rss>\n");
+fclose($rssFile);
 $news = ob_get_contents();
 ob_end_clean();
 $newsfile = fopen("news.inc.php", "w");
@@ -166,7 +196,7 @@ fclose($newsfile);
 ob_start();
 ?>
 <!DOCTYPE html>
-<!-- test coment -->
+<!-- test comment -->
 <!--[if IE 6]>
 <html id="ie6" lang="en-US">
 <![endif]-->
@@ -192,6 +222,7 @@ ob_start();
 <link rel="mask-icon" href="/safari-pinned-tab.svg?v=rMJdgme0zY" color="#5bbad5">
 <link rel="shortcut icon" href="/favicon.ico?v=rMJdgme0zY">
 <link rel="manifest" href="site.webmanifest">
+<link rel="alternate" href="/feed.rss" title="Prepaid News RSS feed" type="application/rss+xml" />
 <meta name="apple-mobile-web-app-title" content="PPCompare">
 <meta name="application-name" content="PPCompare">
 <meta name="msapplication-TileColor" content="#da532c">
