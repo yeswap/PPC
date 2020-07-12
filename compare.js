@@ -1018,8 +1018,8 @@ function addRowHandlers() {
           if (nTaxes) {calcCost += " + taxes";}
           moMonCost.innerText = calcCost;
           switch (nTaxes){
-            case 1: sTaxes = "Point of sale taxes"; break;
-            case 2: sTaxes = "Point of sale and telecom taxes"; break;
+            case 1: sTaxes = "point of sale (sales tax, etc.) only. Typically under 10%."; break;
+            case 2: sTaxes = "Point of sale plus telecom taxes and fees (USF, cost recovery fee, etc), averages about 20%."; break;
             default: sTaxes = "None";
           }
           moTaxes.innerText = sTaxes;
