@@ -3,11 +3,11 @@ document.getElementById("wrap").addEventListener("scroll",function(){
    this.querySelector("thead").style.transform = translate;
   });
 // globals
-    var eTbl = {"monCost": 0,"oper":1, "netw":2,"mins":3,"txts":4,"data":5,"ID":6}; //JavaScript "enum" for array row indexes
+    var eTbl = {"monCost": 0,"oper":1, "netw":2,"mins":3,"txts":4,"data":5,"ID":6}; //JavaScript "enum" for table row indexes
     
     var ePersist = {monCost:0,mins:1,txts:2,data:3};
     
-    var eRow = {plan:0,cost:1,costType:2,overageThrottle:3, isPayGo:4, HasRollover:5, LineFee:6, multiLine:7, notes:8, oprID:9, AllowsHotspot:10, Hotspot_HS_Limit:11, Hotspot_HS_Throttle:12, HotspotThrottle:13, TextRoaming:14, VoiceRoaming:15, DataRoaming:16, AutopayDiscount:17, MMS:18, showWork:19, noVoLTE:20};
+    var eRow = {plan:0,cost:1,costType:2,overageThrottle:3, isPayGo:4, HasRollover:5, LineFee:6, multiLine:7, notes:8, oprID:9, AllowsHotspot:10, Hotspot_HS_Limit:11, Hotspot_HS_Throttle:12, HotspotThrottle:13, TextRoaming:14, VoiceRoaming:15, DataRoaming:16, AutopayDiscount:17, MMS:18, showWork:19, noVoLTE:20,BaseThrottle:21, DataShared:22}; //JavaScript "enum" for rowMeta
     
     var eFmlyPln = {Cost:0, MinsShared:1, TxtsShared:2, DataShared:3, AutopayDiscount:4};
     
@@ -181,7 +181,9 @@ document.getElementById("wrap").addEventListener("scroll",function(){
         }
         
         if (planLines > 1) {
-          thisMB *= planLines;
+          if (dataShared = rowMeta[eRow.DataShared] == 1){
+            thisMB *= planLines;
+          }
         }
         colMins = row.cells[eTbl.mins];
         if (colMins.textContent === "None") {
@@ -1026,6 +1028,19 @@ function addRowHandlers() {
           moMins.innerText = cells[eTbl.mins].innerHTML;
           moTxts.innerText = cells[eTbl.txts].innerHTML;
           moData.innerText = cells[eTbl.data].innerHTML;
+          if (rowMeta[eRow.DataShared]==1){
+            moData.innerText += " shared";
+          }
+          if (rowMeta[eRow.BaseThrottle]>1){
+            if (rowMeta[eRow.BaseThrottle]>1024){
+              moData.innerText += " at " + rowMeta[eRow.BaseThrottle]/1024 + " mbps";
+            }else{
+              moData.innerText += " at " + rowMeta[eRow.BaseThrottle] + " kbps"; 
+            }
+          }else{
+            moData.innerText += " at high speeds"
+          }
+          moData.innerText += ".";
           nThrottled = rowMeta[eRow.overageThrottle];
           switch (nThrottled) {
             case -1:

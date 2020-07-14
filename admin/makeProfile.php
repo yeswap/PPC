@@ -418,17 +418,30 @@
              $data = '$'.stripZeros($data).'/MB';
            }
        }
+      if ($row['DataShared'] != 0){
+        $data .= " shared";
+      }
+      if ($row["BaseThrottle"]>1){
+        if ($row["BaseThrottle"]>1024){
+          $baseSpeed = " at " . $row["BaseThrottle"]/1024 . " mbps";
+        }else{
+          $baseSpeed = " at " . $row["BaseThrottle"] . " kbps"; 
+        }
+      }else{
+        $baseSpeed = " at high speeds";
+      }
+
       echo '<b>Data: </b> '.$data;
       if ($row['Data'] != 0) {
         switch ($row['OverageThrottle']) {
          case -1:
-           $throttle = " Hard capped";
+           $throttle = $baseSpeed . " hard capped";
            break;
          case 0:
-           $throttle = "";
+           $throttle = $baseSpeed;
            break;
           default:
-            $throttle = " at high speed, followed by unlimited data at ". $row['OverageThrottle'].' kbps';
+            $throttle = $baseSpeed . ", followed by unlimited data at ". $row['OverageThrottle'].' kbps';
         }
         echo $throttle;
       }
@@ -484,7 +497,7 @@
       }
       echo "<b>Hotspot:</b> ".$sHotspot.".\n";
       $planID = $row["ID"];
-      $sqlFP = "select NumLines, Price, AutoPayDiscount, DataShared, Notes from FamilyPlans where PlanID =".$planID."  order by NumLines";
+      $sqlFP = "select NumLines, Price, AutoPayDiscount, DataShared, Notes, MinutesShared from FamilyPlans where PlanID =".$planID."  order by NumLines";
       if (!$resultFP = $connection->query($sqlFP)) {
           die ('There was an error running FamilyPlans query [' . $connection->error . ']');
       }
@@ -495,6 +508,18 @@
         $sNotes = "";
         while ($rowFP = $resultFP->fetch_array()) {
           $sFP .= $sBefore.$rowFP["NumLines"]." lines: $".$rowFP["Price"];
+          $shared="";
+          if($rowFP["MinutesShared"]==1){
+            $shared = " minutes";
+            if($rowFP["DataShared"]==1){
+              $shared .= " and data";
+            }
+          }elseif($rowFP["DataShared"]==1){
+            $shared .= " data";
+          }
+          if($shared != ""){
+            $sFP .= $shared . " shared";
+          }
           if ($rowFP["AutoPayDiscount"] != "0.00"){
             $sFP .= ", $".$rowFP["AutoPayDiscount"]. " autopay discount";
           }
