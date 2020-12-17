@@ -10,23 +10,12 @@ $feed = new SimplePie();
 
 // Set which feed to process.
 $feed->set_feed_url(array(
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=518&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=234&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=347&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=527&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=364&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=335&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=249&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=330&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=343&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=336&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=344&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=551&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=576&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=714&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=702&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=739&lastpost=true',
-	'http://micallen.freeforums.org/feed.php'
+	'http://www.npr.org/rss/rss.php?id=1001',
+	'http://www.npr.org/rss/rss.php?id=1019',
+	'https://californianewswire.com/CA/san_francisco/feed/',
+	'http://feeds.abcnews.com/abcnews/topstories',
+	'https://www.cbsnews.com/latest/rss/main',
+	'http://newsrss.bbc.co.uk/rss/newsonline_world_edition/americas/rss.xml'
 ));
 
 # $feed->set_cache_duration (600); //The cache duration
@@ -44,7 +33,7 @@ $feed->handle_content_type();
 
 <html lang="en">
 <head>
-	<title>Forum Feeds</title>
+	<title>News Feeds</title>
 	<meta charset="utf-8">
 	<meta name = "viewport" content = "width = device-width, initial-scale=1"/>
 	<style type="text/css">

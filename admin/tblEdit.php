@@ -107,7 +107,11 @@
         $iCount++;
         if ($column["DATA_TYPE"] == 'text'){
           echo"<div style='display:block;'>\n<label for = '".$column["COLUMN_NAME"]."'>".$column["COLUMN_NAME"].":</label>&nbsp;";
-          echo "<textarea rows='5' name=".$column["COLUMN_NAME"]." >".$row[$column["COLUMN_NAME"]]."</textarea></div>\n";
+		  echo "<textarea rows='5' name=".$column["COLUMN_NAME"]." >";
+			if (isset($row[$column["COLUMN_NAME"]])){
+				echo $row[$column["COLUMN_NAME"]];
+			}
+			echo "</textarea></div>\n";
         }elseif ($column["COLUMN_KEY"] != 'PRI'){
         	echo"<div>\n<label for = '".$column["COLUMN_NAME"]."'>".$column["COLUMN_NAME"].":</label>&nbsp;";
 					if ($column["DATA_TYPE"] == 'date'){

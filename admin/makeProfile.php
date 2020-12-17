@@ -218,15 +218,16 @@
 <nav>
  <ul class="menu">
    <li class="page_item"><a href="/">Home</a></li>
+   <li class="page_item"><a href="/deals" title="Deals">Deals</a></li>
    <li class="page_item"><a href="/profiles/" title="Operator Profiles">Operators</a></li>
-   <li class="page_item"><a href="/about.html">About</a></li>
-   <li class="page_item hidable"><a href="/privacy.html" title="Privacy Policy">Privacy</a></li>
+   <li class="page_item hidable"><a href="/about.html">About</a></li>
+   <!-- <li class="page_item hidable"><a href="/privacy.html" title="Privacy Policy">Privacy</a></li> -->
    <li class="page_item"><a href="/help.html">Help</a></li>
  </ul>
 </nav>
   <div id="socialicons">
     <a target="_blank" title="Twitter" rel="noopener" href="https://www.twitter.com/yeswap"><img alt="twitter" src="twit.png" border="0"></a>
-    <a targt="_blank" title="Facebook" rel="noopener" href="https://www.facebook.com/ PrepaidCompare"><img alt="Facebook" src="fb.png" border="0"></a>
+    <a targt="_blank" title="Facebook" rel="noopener" href="https://www.facebook.com/PrepaidCompare"><img alt="Facebook" src="fb.png" border="0"></a>
   </div>
   <div class="separator"></div>
 </div>
@@ -393,10 +394,15 @@
 
       switch (true) {
         case $row['Data'] == -1:
+
           $data = "Unlimited";
           break;
         case $row['Data'] == 0:
-          $data = "None";
+          if ($row['OverageThrottle']>1){
+            $data = "Unlimited at ". $row['OverageThrottle'].' kbps';
+          }else{
+            $data = "None";
+          }
           break;
         case $row['Data'] > 1023:
           $data = round($row['Data']/1024,2) . ' GB';
@@ -430,7 +436,6 @@
       }else{
         $baseSpeed = " at high speeds";
       }
-
       echo '<b>Data: </b> '.$data;
       if ($row['Data'] != 0) {
         switch ($row['OverageThrottle']) {
@@ -442,9 +447,9 @@
            break;
           default:
             $throttle = $baseSpeed . ", followed by unlimited data at ". $row['OverageThrottle'].' kbps';
+          }
+          echo $throttle;
         }
-        echo $throttle;
-      }
       echo ".<br/>\n";
       $AllowsHotspot = $row["AllowsHotspot"];
       $Hotspot_HS_Limit = $row["Hotspot_HS_Limit"];

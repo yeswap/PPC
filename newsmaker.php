@@ -1,6 +1,12 @@
 <?php
-error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
-ini_set("display_errors", 1); # 0 - production, 1 - development
+#if ( function_exists("DebugBreak") ) {
+#DebugBreak();
+#}
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
+ini_set('log_errors', 1);
+ini_set("error_log", "/usr/home/yeswap/php-error.log");
+error_reporting(E_ALL & ~E_NOTICE);
 //write PPC RSS feed headers
 $rssFile=fopen("feed.rss", "w");
 fwrite($rssFile, '<?xml version="1.0" encoding="utf-8"?>'."\n");
@@ -62,8 +68,8 @@ $feed->set_feed_url(array(
 	'http://prepaidmobilephonereviews.com/feed/',
 	'http://feeds.feedburner.com/PrepaidPhoneNews?format=xml',
 	'https://www.tmonews.com/tag/prepaid/feed/',
-	'https://www.tmonews.com/tag/metropcs/feed/',
-	'http://blog.freedompop.com/feed/',
+  'https://www.tmonews.com/tag/metropcs/feed/',
+  'https://coveragecritic.com/feed/',
 	'https://blog.google/products/google-fi/rss/',
 	'https://bgr.com/tag/metropcs/feed/',
 	'https://bgr.com/tag/boost/feed/',
@@ -143,8 +149,9 @@ if($rows > 0) {
 	  "permalink"=>$row['permalink'],
 	  "creator"=>$row['creator'],
 	  "subject" =>$row['subject'],
-	  "date"=>$row['date'],
-	  "content"=>nl2br($row['content']));
+    "date"=>$row['date'],
+    "content"=>($row['content']));
+	  //"content"=>nl2br($row['content']));
   }
 }
 // sort the array
@@ -241,7 +248,7 @@ ob_start();
 <meta property="og:description" content="Find the Best Prepaid Plan for Any Budget." />
 <meta property="og:url" content="https://prepaidcompare.net" />
 <meta property="og:site_name" content="PrepaidCompare" />
-<meta property="og:image" content="https://prepaidcompare.net/apple-icon.png" />
+<meta property="og:image" content="https://prepaidcompare.net/ms-icon-310x310.png" />
 
 <script type="application/ld+json">
 [
@@ -257,8 +264,8 @@ ob_start();
 {
   "@context": "http://schema.org",
   "@type": "WebSite",
-  "url": "https://prepaidcompare.net/profiles/",
-  "name": "Prepaid Cellphone Operator Profiles",
+  "url": "https://prepaidcompare.net",
+  "name": "PrepaidCompare",
    "author": {
       "@type": "Person",
       "name": "Dennis Bournique",
@@ -292,9 +299,10 @@ ob_start();
       <nav>
         <ul class="menu">
           <li class="current_page_item"><a href="/">Home</a></li>
+          <li class="page_item"><a href="/deals" title="Deals">Deals</a></li>
           <li class="page_item"><a href="/profiles/" title="Operator Profiles">Operators</a></li>
           <li class="page_item"><a href="/about.html">About</a></li>
-          <li class="page_item"><a href="/privacy.html" title="Privacy Policy">Privacy</a></li>
+          <!--<li class="page_item"><a href="/privacy.html" title="Privacy Policy">Privacy</a></li>-->
           <li class="page_item"><a href="/help.html">Help</a></li>
         </ul>
       </nav>

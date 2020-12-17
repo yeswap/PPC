@@ -18,7 +18,7 @@
     	if ($connection->connect_errno > 0) {
      		die ('Unable to connect to database [' . $connection->connect_error . ']');
     	}
-      $sql = "SELECT * FROM NewsItems order by date desc";
+      $sql = "SELECT * FROM NewsItems order by NewsItemID desc";
 
     	if (!$result = $connection->query($sql)) {
         	die ('There was an error running query[' . $connection->error . ']');

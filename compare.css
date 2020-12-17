@@ -4,8 +4,8 @@
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
-del, dfn, em, font, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
+del, dfn, font, ins, kbd, q, s, samp,
+small, strike, sub, sup, tt, var,
 dl, dt, dd, ol, ul, li,
 fieldset, form, label, legend,
 table, caption, tbody, tfoot, thead, tr, th, td {
@@ -19,8 +19,14 @@ table, caption, tbody, tfoot, thead, tr, th, td {
   padding: 0;
   vertical-align: baseline;
 }
+
 html {
   background-color: #E0DED7;
+}
+
+ul {
+  list-style-type: disc;
+  padding-left: 1.5em;
 }
 
 /* needs refactoring v */
@@ -294,9 +300,9 @@ thead, th {color:white; background-color:#007d15;}
 ul.menu {
   margin-top: 0pt;
   margin-right: 0pt;
-  margin-bottom: 5pt;
+  margin-bottom: 7pt;
   margin-left: 0pt;
-
+  padding-left: 0pt;
 }
 
 ul.menu li {
@@ -388,7 +394,7 @@ ul.menu li.current_page_item a, ul.menu li.current_page_item a:hover {
 /* less than 976px single column primary and secondary */
 @media screen and (max-width: 61em){
   #page {padding:0;}
-  #primary, #secondary, .menu{
+  #primary, #secondary, ul.menu{
     width: 100%;
     padding-left:.25em;
   }

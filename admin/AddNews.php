@@ -21,6 +21,8 @@
       }
     </style>
     <title>Add News Item</title>
+    <script src="https://cdn.tiny.cloud/1/uh3kdg7fxrs8y8nppepc7wh0lanndqlwy9ji0pk7bf7kw7gd/tinymce/5/tinymce.min.js" referrerpolicy="origin">
+    </script>      
   </head>
   <body>
     <form action="/tblUpdate.php">
@@ -106,8 +108,7 @@
           <input type="text" name="date" value="<?=$date ?>">
           <br><br>
           Exerpt:<br>
-          <textarea name='content' rows='15'><?=$content ?></textarea>
-          <div id="charactersRemaining"></div>
+          <textarea id="content" name='content' rows='15'><?=$content ?></textarea>
           <br><br>
           <input type="hidden" name="table" value="<?=$sTable ?>">
           <input type="hidden" name="HashedID" value="<?=$HashedID ?>">
@@ -128,15 +129,17 @@
       <script>
       var el;
 
-      function countCharacters(e) {
-        var textEntered, countRemaining, counter;
-        textEntered = document.getElementsByName('content')[0].value;
-        counter = textEntered.length;
-        countRemaining = document.getElementById('charactersRemaining');
-        countRemaining.textContent = counter;
-      }
-      el = document.getElementsByName('content')[0];
-      el.addEventListener('keyup', countCharacters, false);
+    
+      tinymce.init({
+        selector: 'textarea#content',
+        mobile: {
+          menubar: true
+        },
+        plugins: 'code lists charmap preview hr wordcount',
+        toolbar: 'undo redo | bold italic | numlist bullist | code charmap',
+        toolbar_mode: 'floating',
+        height: 500
+      });      
       </script>
   </body>
 </html>

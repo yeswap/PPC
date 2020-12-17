@@ -29,9 +29,6 @@ table, caption, tbody, tfoot, thead, tr, th, td {
   h3 {
     margin-top: 1em;
   }
-  ul {
-    padding-left: 1em;
-  }
   #branding{
     margin-bottom: 3pt;
   }
@@ -206,7 +203,6 @@ table, caption, tbody, tfoot, thead, tr, th, td {
 	}
 	@media screen and (max-width: 61em){
     .item {padding: 0 .5em;}
-    ul.menu {padding-left:.3em;}
   }
 	@media (max-width: 40em) {
 	  #site-title h1 a {
@@ -228,12 +224,17 @@ table, caption, tbody, tfoot, thead, tr, th, td {
       padding-top: .2em;
     }
     h2 {font-size: 1.2em;}
-      .hidable  {
+    .menu li.current_page_item {
+      display: none;
+    }
+  }
+  @media (max-width: 24em) {
+    ul.menu li.hidable  {
       display:none;
     }
-	}
-	@media (max-width: 22em) {
-    .menu li.current_page_item {
+  }
+	@media (max-width: 19em) {
+    #socialicons {
       display:none;
     }
     #menu-container{padding-bottom:7px;}

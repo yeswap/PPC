@@ -1,6 +1,12 @@
 <?php
-error_reporting(E_ERROR | E_WARNING | E_PARSE | E_NOTICE);
-ini_set("display_errors", 1); # 0 - production, 1 - development
+#if ( function_exists("DebugBreak") ) {
+#DebugBreak();
+#}
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
+ini_set('log_errors', 1);
+ini_set("error_log", "/usr/home/yeswap/php-error.log");
+error_reporting(E_ALL & ~E_NOTICE);
 ob_start();
 ?>
     <div id="chooser">
@@ -209,7 +215,7 @@ error_reporting(E_ALL);
           const VoLTE = 4;
           const VoWiFi = 5;
         }
-        $sql = "select * from Operators order by OperatorID";
+        $sql = "select * from Operators where Active = 'Y' order by OperatorID";
         if (!$result = $connection->query($sql)) {
             die ('There was an error running Operators Meta query [' . $connection->error . ']');
         }
@@ -244,7 +250,7 @@ error_reporting(E_ALL);
         die ('Unable to connect to database [' . $connection->connect_error . ']');
       }
     //  $sql = "SELECT * FROM Plans";
-      $sql = "select Plans.ID as PlanID, Plans.MonthlyCost as MonthlyCost, Operators.Name as Operator, Networks.Name as Network, Plans.Name as Plan, Cost, CostType, Minutes, Texts, AppleSupportLevel & 1=1 as MMS, Data, OverageThrottle, Plans.Notes as Notes, isPayGo, HasRollover, LineFee, MultiLine, Plans.OperatorID, AllowsHotspot, Hotspot_HS_Limit, Hotspot_HS_Throttle, HotspotThrottle, TextRoaming, VoiceRoaming, DataRoaming, AutopayDiscount, NoVoLTE, BaseThrottle, DataShared from Plans join Operators on Plans.OperatorID = Operators.OperatorID join Networks on Operators.NetworkID = Networks.NetworkID order by MonthlyCost, Operator, Network";
+      $sql = "select Plans.ID as PlanID, Plans.MonthlyCost as MonthlyCost, Operators.Name as Operator, Networks.Name as Network, Plans.Name as Plan, Cost, CostType, Minutes, Texts, AppleSupportLevel & 1=1 as MMS, Data, OverageThrottle, Plans.Notes as Notes, isPayGo, HasRollover, LineFee, MultiLine, Plans.OperatorID, AllowsHotspot, Hotspot_HS_Limit, Hotspot_HS_Throttle, HotspotThrottle, TextRoaming, VoiceRoaming, DataRoaming, AutopayDiscount, NoVoLTE, BaseThrottle, DataShared from Plans join Operators on Plans.OperatorID = Operators.OperatorID join Networks on Operators.NetworkID = Networks.NetworkID where Operators.Active = 'Y' order by MonthlyCost, Operator, Network";
       if (!$result = $connection->query($sql)) {
           die ('There was an error running query[' . $connection->error . ']');
       }

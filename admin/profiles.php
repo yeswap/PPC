@@ -88,15 +88,16 @@
 <nav>
  <ul class="menu">
    <li class="page_item"><a href="/">Home</a></li>
+   <li class="page_item"><a href="/deals" title="Deals">Deals</a></li>
    <li class="current_page_item"><a href="/profiles/" title="Operator Profiles">Operators</a></li>
-   <li class="page_item"><a href="/about.html">About</a></li>
-   <li class="page_item"><a href="/privacy.html" title="Privacy Policy">Privacy</a></li>
+   <li class="page_item hidable"><a href="/about.html">About</a></li>
+   <!-- <li class="page_item hidable"><a href="/privacy.html" title="Privacy Policy">Privacy</a></li> -->
    <li class="page_item"><a href="/help.html">Help</a></li>
  </ul>
  </nav>
   <div id="socialicons">
     <a target="_blank" title="Twitter" rel="noopener" href="https://www.twitter.com/yeswap"><img alt="twitter" src="twit.png" border="0"></a>
-    <a targt="_blank" title="Facebook" rel="noopener" href="https://www.facebook.com/ PrepaidCompare"><img alt="Facebook" src="fb.png" border="0"></a>
+    <a targt="_blank" title="Facebook" rel="noopener" href="https://www.facebook.com/PrepaidCompare"><img alt="Facebook" src="fb.png" border="0"></a>
   </div>
   <div class="separator"></div>
 </div>
@@ -128,7 +129,7 @@
   
 //Get Operator
 
-  $sql = "select OperatorID, Name, NameSuffix from Operators order by Name, NameSuffix";
+  $sql = "select OperatorID, Name, NameSuffix from Operators where active = 'Y' order by Name, NameSuffix";
   if (!$result = $connection->query($sql)) {
       die ('There was an error running the Operators query [' . $connection->error . ']');
   }
@@ -156,8 +157,8 @@
   <div id="footer">
     <a href="/">Home</a>
     <a href="/about.html">About</a>
-    <a href="privacy.html">Privacy</a>
-    <a href="help.html">Help</a>
+    <a href="/privacy.html">Privacy</a>
+    <a href="/help.html">Help</a>
   </div>
 </div> <!-- main -->
 </div> <!-- page -->

@@ -1,0 +1,32 @@
+<?php
+#if ( function_exists("DebugBreak") ) {
+#DebugBreak();
+#}
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
+ini_set('log_errors', 1);
+ini_set("error_log", "/usr/home/yeswap/php-error.log");
+error_reporting(E_ALL & ~E_NOTICE);
+//write PPC RSS feed headers
+$rssFile=fopen("feed.rss", "w");
+$bffile = fopen("../bf/index.html", "w");
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+    <script src="https://cdn.tiny.cloud/1/uh3kdg7fxrs8y8nppepc7wh0lanndqlwy9ji0pk7bf7kw7gd/tinymce/5/tinymce.min.js" referrerpolicy="origin">
+    </script>
+    <script>
+      tinymce.init({
+        selector: 'textarea#content'
+      });
+    </script>
+  </head>
+  <body>
+    <textarea id="content" name='content' rows='25'>
+    </textarea>
+  </body>
+</html>

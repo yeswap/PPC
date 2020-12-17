@@ -10,23 +10,21 @@ $feed = new SimplePie();
 
 // Set which feed to process.
 $feed->set_feed_url(array(
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=518&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=234&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=347&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=527&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=364&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=335&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=249&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=330&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=343&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=336&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=344&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=551&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=576&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=714&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=702&lastpost=true',
-	'http://www.howardforums.com/external.php?type=RSS1&forumids=739&lastpost=true',
-	'http://micallen.freeforums.org/feed.php'
+	'https://forum.xda-developers.com/f/lg-v20-roms-kernels-recoveries-other-developm.5874/index.rss',
+	'https://forum.xda-developers.com/f/lg-v20-guides-news-discussion.5873/index.rss',
+	'https://forum.xda-developers.com/f/lg-v20-questions-answers.5872/index.rss',
+	'https://forum.xda-developers.com/f/at-t-samsung-galaxy-note-4.3646/index.rss',
+	'https://forum.xda-developers.com/f/g3-general.3148/index.rss',
+	'https://forum.xda-developers.com/f/g3-q-a-help-troubleshooting.3149/index.rss',
+	'https://forum.xda-developers.com/f/g3-original-android-development.3152/index.rss',
+	'https://forum.xda-developers.com/f/g3-android-development.3151/index.rss',
+	'https://forum.xda-developers.com/f/at-t-lg-g4.4312/index.rss',
+	'https://forum.xda-developers.com/f/sprint-samsung-galaxy-s6.4167/index.rss',
+	'https://forum.xda-developers.com/f/e-2015-general.4072/index.rss',
+	'https://forum.xda-developers.com/f/e-2015-q-a-help-troubleshooting.4073/index.rss',
+	'https://forum.xda-developers.com/f/e-2015-cdma-android-development.4124/index.rss',
+	'https://forum.xda-developers.com/f/e-2015-android-development.4075/index.rss',
+	'https://forum.xda-developers.com/f/e-2015-original-android-development.4076/index.rss'
 ));
 
 # $feed->set_cache_duration (600); //The cache duration
@@ -44,7 +42,7 @@ $feed->handle_content_type();
 
 <html lang="en">
 <head>
-	<title>Forum Feeds</title>
+	<title>XDA Feeds</title>
 	<meta charset="utf-8">
 	<meta name = "viewport" content = "width = device-width, initial-scale=1"/>
 	<style type="text/css">

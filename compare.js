@@ -322,14 +322,6 @@ document.getElementById("wrap").addEventListener("scroll",function(){
             row.style.display = "none";
             continue; // jump over this row
         }
-        //If unlimited throttled is required, hide rows that
-        //still don't have any data after addons.
-        if (needsunlimTrot){
-          if (row.cells[eTbl.data].textContent == "None"){
-            row.style.display = "none";
-            continue; // jump over this row
-          }
-        }
 
         if (lines > 1 && planLines === 0){
           monCstDesc = CalcFmylPlans (row.cells, lines, payGoCost, mb, mins, texts, monCstDesc, autoPay);

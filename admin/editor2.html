@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="minified/themes/default.min.css" />
+    <script src="minified/sceditor.min.js"></script>
+    <script>
+      // Replace the textarea #example with SCEditor
+      var textarea = document.getElementById('example');
+      sceditor.create(textarea, {
+	      format: 'xhtml',
+	      style: 'minified/themes/content/default.min.css'
+      });
+    </script>
+  </head>
+
+  <body>
+    <div>
+      <textarea id = "example"></textarea>
+    </div>
+  </body>
+</html>
