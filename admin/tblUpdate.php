@@ -17,15 +17,17 @@
     function convert_smart_quotes($text) {
       // First, replace UTF-8 characters.
       $text = str_replace(
-        array("\xe2\x80\x98", "\xe2\x80\x99", "\xe2\x80\x9c", "\xe2\x80\x9d", "\xe2\x80\x93", "\xe2\x80\x94", "\xe2\x80\xa6"),
-        array("'", "'", '"', '"', '-', '--', '...'),
+        array("\xe2\x80\x98", "\xe2\x80\x99", "\xe2\x80\x9c", "\xe2\x80\x9d", "\xe2\x80\x93", "\xe2\x80\x94", "\xe2\x80\xa6", "\xc2\xa0"),
+        array("'", "'", '"', '"', '-', '--', '...', ' '),
         $text);
       // Next, replace their Windows-1252 equivalents.
       $text = str_replace(
-        array(chr(145), chr(146), chr(147), chr(148), chr(150), chr(151), chr(133)),
+        array(chr(145), chr(146), chr(147), chr(148), chr(150), chr(151), chr(133)), 
         array("'", "'", '"', '"', '-', '--', '...'),
         $text);
-  
+      // Replace &nbsp;
+      $text =  str_replace('&nbsp;', ' ', $text);
+      
       return $text;
     }
 
@@ -71,7 +73,10 @@
         foreach($colArray as $column){
           $iCount++;
           if ($column["COLUMN_NAME"] != $sPK){
-            $sql .= $column["COLUMN_NAME"].'="'.$connection->real_escape_string($_GET[$column["COLUMN_NAME"]]).'"';
+            $myData = convert_smart_quotes($_GET[$column["COLUMN_NAME"]]);
+            $sql .= $column["COLUMN_NAME"].'="'.$connection->real_escape_string($myData).'"';
+
+           // $sql .= $column["COLUMN_NAME"].'="'.$connection->real_escape_string($_GET[$column["COLUMN_NAME"]]).'"';
             if($iCount < sizeof($colArray)){
               $sql .= ', ';
             }

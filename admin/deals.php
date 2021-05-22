@@ -12,13 +12,13 @@ $handle = fopen($filename, "r+");
 $content = fread($handle, filesize($filename));
 fclose($handle);
 //Make a backup
-/* $tmpfname = tempnam("../deals", "d");
-$handle = fopen($tmpfname, "w");
+$bufname = "../deals/previous.inc";
+$handle = fopen($bufname, "w");
 if(fwrite($handle, $content)=== FALSE) {
-  echo "Cannot write to file ($tmpfname)";
+  echo "Cannot write to file ($bufname)";
   exit;
 }
-fclose($handle); */
+fclose($handle);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -64,7 +64,7 @@ fclose($handle); */
 if (!empty($_POST)){
   $handle = fopen($filename, "w");
   if(fwrite($handle, $_POST["content"])=== FALSE) {
-    echo "Cannot write to file ($tmpfname)";
+    echo "Cannot write to file ($filename)";
     exit;
   }else{ ?>
     <h1>File Updated</h1>

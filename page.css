@@ -28,6 +28,8 @@ table, caption, tbody, tfoot, thead, tr, th, td {
   }
   h3 {
     margin-top: 1em;
+    font-size: large;
+    font-weight: bold;
   }
   #branding{
     margin-bottom: 3pt;

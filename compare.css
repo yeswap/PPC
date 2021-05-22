@@ -217,8 +217,10 @@ thead, th {color:white; background-color:#007d15;}
     width:100%;
     overflow-x: hidden;
 }
+
 #wrap{height: 66vh;}
 #newswrap {height: 73vh;}
+
 .textfield {
    width: 10ex;
 }
@@ -388,6 +390,9 @@ ul.menu li.current_page_item a, ul.menu li.current_page_item a:hover {
     min-width:300px;
     overflow: auto;
     display:block;
+  }
+  #primary, #secondary{
+    height:80vh;
   }
   #left-menu, #right-menu {display:none}
 }

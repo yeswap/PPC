@@ -1,109 +1,4 @@
-<!doctype html>
-<!--[if IE 6]>
-<html id="ie6" lang="en-US">
-<![endif]-->
-<!--[if IE 7]>
-<html id="ie7" lang="en-US">
-<![endif]-->
-<!--[if IE 8]>
-<html id="ie8" lang="en-US">
-<![endif]-->
-<!--[if !(IE 6) | !(IE 7) | !(IE 8)  ]><!-->
-<html lang="en-US">
-<!--<![endif]-->
-<head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<meta name="description" content="Find the best current online prepaid and unlocked phone deals">
-<meta name="author" content="PrepaidCompare.net">
-<title>Prepaid Deals</title>
-<link rel="profile" href="http://gmpg.org/xfn/11" />
-<link rel="alternate" media="handheld" href="https://prepaidcompare.net/" />
-<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-<link rel="manifest" href="/site.webmanifest">
-<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
-<meta name="msapplication-TileColor" content="#da532c">
-<meta name="theme-color" content="#ffffff">
-
-<meta name="twitter:card" content="summary" />
-<meta name="twitter:site" content="@yeswap" />
-<meta name="twitter:title" content="Prepaid Deals" />
-<meta name="twitter:description" content="All the current online prepaid and unlocked phone deals in one place"/>
-<meta name="twitter:image" content="https://prepaidcompare.net/apple-icon.png" />
-<meta name="twitter:creator" content="@yeswap" />
-
-<meta property="fb:app_id" content="448013232393047"/>
-<meta property="og:type" content="website" />
-<meta property="og:title" content="Prepaid Deals" />
-<meta property="og:description" content="All the current online prepaid and unlocked phone deals in one place" />
-<meta property="og:url" content="https://prepaidcompare.net/deals" />
-<meta property="og:site_name" content="PrepaidCompare" />
-<meta property="og:image" content="https://prepaidcompare.net/ms-icon-310x310.png" />
-
-<script type="application/ld+json">
-[
-{
-  "@context": "http://schema.org",
-  "@type": "Organization",
-  "url": "https://prepaidcompare.net/cm",
-  "logo": "https://prepaidcompare.net/logo.png",
-  "ethicsPolicy" : "Prepaidcompare.net is non-commercial and strives to be impartial. We don't accept payment from mobile operators or vendors and list deals based solely on value.",
-  "potentialAction": "Find all the current online prepaid and unlocked phone deals in one place",
-  "name" : "PrepaidCompare"
-},
-{
-  "@context": "http://schema.org",
-  "@type": "WebSite",
-  "url": "https://prepaidcompare.net/cm/",
-  "name": "Prepaid Deals",
-   "author": {
-      "@type": "Person",
-      "name": "Dennis Bournique",
-       "sameAs" : [ "https://www.facebook.com/wapreview",
-      "https://www.reddit.com/user/yeswap",
-      "https://twitter.com/yeswap",
-      "https://www.howardforums.com/member.php/262421-Yeswap"]
-    },
-  "description" : "A list of all current prepaid and unlocked phone deals. It will be updated weekly and when new deals surface.",
-  "publisher": "PrepaidCompare"
-}
-]
-</script>
-
-<link rel="stylesheet" href="/page.css">
-</head>
-<body>
-<div id="page">
-<div id="main">
-<div id="branding" role="banner">
-<div id="site-title">
-  <h1><a href="http://prepaidcompare.net/" title="Prepaid Compare" rel="home">prepaid<span style="color:#00BB00">compare</span></a></h1>
-</div>
-<div class="separator"></div>
-</div><!-- #branding -->
-<div id="menu-container">
-  <nav>
-    <ul class="menu">
-      <li class="page_item"><a href="/">Home</a></li>
-      <li class="current_page_item"><a href="/deals" title="Deals">Deals</a></li>
-      <li class="page_item"><a href="/profiles/" title="Operator Profiles">Operators</a></li>
-      <li class="page_item hidable"><a href="/about.html" title="About">About</a></li>
-      <li class="page_item"><a href="/privacy.html" title="Privacy">Privacy</a>
-      <li class="page_item hidable"><a href="/help.html" title="help">Help</a></li>
-    </ul>
-  </nav>
-  <div id="socialicons">
-    <a target="_blank" title="Twitter" rel="noopener" href="https://www.twitter.com/yeswap"><img alt="twitter" src="/twit.png" border="0"></a>
-    <a targt="_blank" title="Facebook" rel="noopener" href="https://www.facebook.com/PrepaidCompare"><img alt="Facebook" src="/fb.png" border="0"></a>
-  </div>
-  <div class="separator"></div>
-</div>
-<div id="content">
-  <div class="item">
-    <!--Item goes here-->
-    <h2>Online Prepaid and Unlocked Phone Deals</h2>
+<h2>Online Prepaid and Unlocked Phone Deals</h2>
 <p>This week's best online deals on unlocked and prepaid phones and plans. Online deals only for now due to the covid-19 pandemic. <strong>Stay safe, stay at home.</strong></p>
 <p>We do not use affiliate marketing. Prepaid Compare is not compensated when you make a purchase using our links. The site is ad and tracker free.</p>
 <p><strong>Updated Mar 11, 2021.&nbsp;</strong></p>
@@ -160,9 +55,6 @@
 <p><a href="https://tello.com/"><span style="font-size: 14pt;"><strong>Tello</strong></span></a></p>
 <p><strong>15% off</strong> first order with code<strong> 15OFFAFF</strong><br /><strong>50% Off First Three Months and a free SIM</strong>. Activation of a new line of service required. Ends 3/15</p>
 <hr />
-<p><a href="https://ting.com/"><span style="font-size: 14pt;"><strong>Ting</strong></span></a></p>
-<p>Activate a line on the $10/month Flex Plan and recieve a <a href="https://ting.com/blog/flex-10-dollar-gift-card/"><strong>free $10 gift card</strong></a> after two monthly payments. New customers only. Ends 3/31.</p>
-<hr />
 <p><a href="https://shop.totalwireless.com/shop/en/totalwireless/phones"><strong><span style="font-size: 14pt;">Total Wireless</span></strong></a></p>
 <p>Code <strong>USI15</strong>&nbsp;gives 15% off phone prices when purchased with airtime.<br /><br /><strong><a href="https://shop.totalwireless.com/shop/en/totalwireless/phones/tw-moto-e7-xt2052dl">Motorola Moto E7</a></strong>&nbsp;(2020) 32 GB $59.99 (reg $99.99)<br /><strong><a href="https://shop.totalwireless.com/shop/en/totalwireless/phones/tw-samsung-galaxy-a20-s205dl">Samsung Galaxy A20</a></strong>&nbsp;32 GB $79.99<span style="font-size: 12pt;"><span style="font-size: medium;">.&nbsp;</span></span>(was $149.99)<strong><br /><a href="https://shop.totalwireless.com/shop/en/totalwireless/phones/tw-samsung-galaxy-a50-s506dl-reconditioned">Samsung Galaxy A50</a></strong> 64 GB $89.99 reconditioned ($249.99 new). Airtime purchase required.<br /><a href="https://shop.totalwireless.com/shop/en/totalwireless/phones/gp-iphone-se-2-64gb"><strong>iPhone SE</strong></a> (2020) 64 GB $199.99 (reg $399.99) Airtime purchase required.<br /><strong style="font-size: 16px;"><a href="https://shop.totalwireless.com/shop/en/totalwireless/phones/iphone-xr-64gb-cdma">Phone XR</a></strong><span style="font-size: 16px;">&nbsp;</span><span style="font-size: 16px;">64 GB $349.99 (was $599.99) Airtime purchase required.</span></p>
 <hr />
@@ -185,15 +77,4 @@
 <p><a href="https://www.walmart.com/search/?cat_id=0&amp;facet=special_offers%3AReduced+Price%7C%7Cspecial_offers%3ARollback%7C%7Cspecial_offers%3ASpecial+Buy&amp;page=1&amp;query=prepaid+phone&amp;sort=best_seller"><span style="font-size: 14pt;"><strong>Walmart</strong></span></a></p>
 <p><strong>Boost Mobile <a href="https://www.walmart.com/ip/Boost-Mobile-Motorola-MOTO-E/336948615">Motorola Moto E</a></strong> 32 GB $69 (reg $79.99)<strong><br /></strong><strong>Cricket <a href="https://www.walmart.com/ip/Cricket-Wireless-moto-g-stylus/673947642">Motorola Moto G Stylus</a></strong>&nbsp;128 GB (2021) $149 ($299.99 unlocked)<strong><br />Straight Talk <a href="https://www.walmart.com/ip/Straight-Talk-Motorola-Moto-E-32GB-Midnight-Blue-Prepaid-Smartphone/660374224">Motorola Moto E</a></strong> 32 GB (2020) $59 (reg $99)&nbsp;<strong><br />Straight Talk <a href="https://www.walmart.com/ip/Straight-Talk-SAMSUNG-Galaxy-A21-32GB-Black-Prepaid-Smartphone/985781385">Samsung Galaxy A21</a></strong> $99 (reg $249)<br /><strong>Straight Talk <a href="https://www.walmart.com/ip/Straight-Talk-Motorola-G-Stylus-128GB-Gray-Prepaid-Smartphone/881672193">Motorola Moto G Stylus</a></strong> 128 GB (2021) $179 ($299.99 unlocked)<br /><strong>Straight Talk <a href="https://www.walmart.com/ip/Straight-Talk-SAMSUNG-A51-128-GB-Prism-Crush-Black-Prepaid-Smartphone/652023328">Samsung Galaxy A51</a></strong> $199 (reg $399)&nbsp;<br /><strong>Verizon Prepaid <a href="https://www.walmart.com/ip/Verizon-TCL-5G-Prepaid-Smartphone-Diamond-Grey/706445975">TCL 10 5G UW</a></strong> $299 (reg $399)<br /><strong>Verizon Prepaid</strong> activate a new line of service on the $50 ($45 with autopay) 15 GB plan using a new <strong><a href="https://www.walmart.com/cp/8493986">phone or SIM</a></strong> from Walmart and get an extra 10 GB of data (25 GB total). Ends 6/30.</p>
 <hr />
-<p><strong>Sources:</strong> <a href="https://slickdeals.net/">Slickdeals</a>, <a href="https://www.joinhoney.com/explore">Honey</a>, <a href="https://turkforums.jcink.net">Turk Forums</a></p></div> <!-- item -->
-</div> <!-- content -->
-  <div id="footer">
-    <a href="/">Home</a>
-    <a href="/about.html">About</a>
-    <a href="/privacy.html">Privacy</a>
-    <a href="/help.html">Help</a>
-  </div>
-</div> <!-- main -->
-</div> <!-- page -->
-</body>
-</html>
+<p><strong>Sources:</strong> <a href="https://slickdeals.net/">Slickdeals</a>, <a href="https://www.joinhoney.com/explore">Honey</a>, <a href="https://turkforums.jcink.net">Turk Forums</a></p>

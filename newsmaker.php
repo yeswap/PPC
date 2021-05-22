@@ -66,7 +66,6 @@ $feed = new SimplePie();
 $feed->set_feed_url(array(
 	'http://bestmvno.com/feed/',
 	'http://prepaidmobilephonereviews.com/feed/',
-	'http://feeds.feedburner.com/PrepaidPhoneNews?format=xml',
 	'https://www.tmonews.com/tag/prepaid/feed/',
   'https://www.tmonews.com/tag/metropcs/feed/',
   'https://coveragecritic.com/feed/',
@@ -220,6 +219,7 @@ ob_start();
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Compare Prepaid Cellphone Plans | PrepaidCompare</title>
+<link rel="canonical" href="https://prepaidcompare.net" />
 <meta name="description" content="Find the Best Prepaid Plan for Any Budget">
 <link rel="profile" href="http://gmpg.org/xfn/11" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=rMJdgme0zY">

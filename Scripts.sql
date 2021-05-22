@@ -1,12 +1,12 @@
-CREATE TABLE tmptable_1 SELECT * FROM Plans WHERE OperatorID = 116;
+CREATE TABLE tmptable_1 SELECT * FROM Plans WHERE OperatorID = 91;
 ALTER TABLE tmptable_1 MODIFY ID int(11) null;
-UPDATE tmptable_1 SET ID = NULL, OperatorID = 117;
+UPDATE tmptable_1 SET ID = NULL, OperatorID = 121;
 INSERT INTO Plans SELECT * FROM tmptable_1;
 DROP TABLE IF EXISTS tmptable_1;
 
-CREATE TABLE tmptable_1 SELECT * FROM DataAddons WHERE PlanID = 496;
+CREATE TABLE tmptable_1 SELECT * FROM DataAddons WHERE PlanID = 686;
 ALTER TABLE tmptable_1 MODIFY DataAddonID int(11) null;
-UPDATE tmptable_1 SET DataAddonID = NULL, PlanID = 864;
+UPDATE tmptable_1 SET DataAddonID = NULL, PlanID = 1060;
 INSERT INTO DataAddons SELECT * FROM tmptable_1;
 DROP TABLE IF EXISTS tmptable_1;
 
@@ -49,3 +49,7 @@ INSERT INTO Plans SELECT * FROM tmptable_1;
 DROP TABLE IF EXISTS tmptable_1;
 
 DELETE FROM `VoiceAddons` WHERE `PlanID` = 835
+
+SELECT o.name, o.NameSuffix, p.Name, 5G FROM `Plans` p join Operators o on p.OperatorID = o.OperatorID where 5G <> '' ORDER by o.Name, p.Name
+
+Update `Plans` set 5G = 1 WHERE OperatorID = 65

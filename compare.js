@@ -175,7 +175,7 @@ document.getElementById("wrap").addEventListener("scroll",function(){
 
         planLines = rowMeta[eRow.multiLine];
         thisMB = mb;
-        if (planLines > 1 && lines != planLines){
+        if (planLines > 1 && lines ==1 ){
           row.style.display = "none";
           continue; // jump over this row
         }
@@ -323,7 +323,7 @@ document.getElementById("wrap").addEventListener("scroll",function(){
             continue; // jump over this row
         }
 
-        if (lines > 1 && planLines === 0){
+        if (lines > 1 && lines > planLines){
           monCstDesc = CalcFmylPlans (row.cells, lines, payGoCost, mb, mins, texts, monCstDesc, autoPay);
           rowMeta[eRow.showWork] = monCstDesc;
         }else if (rowMeta[eRow.showWork]) {

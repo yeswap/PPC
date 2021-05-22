@@ -12,7 +12,7 @@ ob_start();
     <div id="chooser">
       <h2><b>Prepaid Plan Finder</b></h2>
       <p>
-        Needed per month:
+        Needed per month/line:
         <span class="inputGroup"><label for="mins">Minutes</label>
           <input id="mins" type = "number" class="textfield"/>
         </span>
