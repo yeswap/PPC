@@ -336,6 +336,8 @@ ob_start();
           <div><span class="moItem">MMS supported on iOS?</span> <span id="moIosMms"></span></div>
           <div><span class="moItem">VoLTE?</span> <span id="moVoLTE"></span></div>
           <div><span class="moItem">WiFi Calling?</span> <span id="moVoWiFi"></span></div>
+          <div><span class="moItem">eSIM?</span> <span id="moESIM"></span></div>
+          <div><span class="moItem">5G?</span> <span id="mo5G"></span></div>
           <div><span class="moItem">Hotspot:</span> <span id="moHotspot"></span></div>
           <div><span class="moItem">Domestic Roaming:</span> <span id="moRoaming"></span></div>
           <div><span class="moItem">PayGo?</span>  <span id="moIsPayGo"></span></div>

@@ -7,3 +7,7 @@ ErrorDocument 404 /404page.html
   Header set Pragma "no-cache"
   Header set Expires 0
 </IfModule>
+RewriteEngine On
+RewriteBase /
+RewriteCond %{HTTP_HOST} ^216\.146\.206\.83$
+RewriteRule ^(.*)$ https://prepaidcompare.net/$1 [L,R=301]

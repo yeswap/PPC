@@ -7,7 +7,7 @@ document.getElementById("wrap").addEventListener("scroll",function(){
     
     var ePersist = {monCost:0,mins:1,txts:2,data:3};
     
-    var eRow = {plan:0,cost:1,costType:2,overageThrottle:3, isPayGo:4, HasRollover:5, LineFee:6, multiLine:7, notes:8, oprID:9, AllowsHotspot:10, Hotspot_HS_Limit:11, Hotspot_HS_Throttle:12, HotspotThrottle:13, TextRoaming:14, VoiceRoaming:15, DataRoaming:16, AutopayDiscount:17, MMS:18, showWork:19, noVoLTE:20,BaseThrottle:21, DataShared:22}; //JavaScript "enum" for rowMeta
+    var eRow = {plan:0,cost:1,costType:2,overageThrottle:3, isPayGo:4, HasRollover:5, LineFee:6, multiLine:7, notes:8, oprID:9, AllowsHotspot:10, Hotspot_HS_Limit:11, Hotspot_HS_Throttle:12, HotspotThrottle:13, TextRoaming:14, VoiceRoaming:15, DataRoaming:16, AutopayDiscount:17, MMS:18, showWork:19, noVoLTE:20,BaseThrottle:21, DataShared:22, G5:23}; //JavaScript "enum" for rowMeta
     
     var eFmlyPln = {Cost:0, MinsShared:1, TxtsShared:2, DataShared:3, AutopayDiscount:4};
     
@@ -91,7 +91,7 @@ document.getElementById("wrap").addEventListener("scroll",function(){
       var colMins, colTexts, colMB, iVal, colCost, Cost, colCostPeriod;
       var colPlan, costPerMo, colIsPayGo, isPayGo, CostPeriod, dataOK;
       var minsOK, txtsOK, nLineFee, calcedCost, tmpCost, rowMeta;
-      var eOprMeta = {URL:0,Taxes:1,Notes:2,Suffix:3,VoLTE:4, VoWiFi:5};
+      var eOprMeta = {URL:0,Taxes:1,Notes:2,Suffix:3,VoLTE:4, VoWiFi:5, eSIM:6};
       
       
       if (document.getElementById("ATTyes").checked){
@@ -113,6 +113,8 @@ document.getElementById("wrap").addEventListener("scroll",function(){
       var autoPay = document.getElementById("Autopay").checked;
       var needsVoLTE = document.getElementById("VoLTE").checked;
       var needsVoWiFi = document.getElementById("VoWiFi").checked;
+      var needs5G = document.getElementById("5G").checked;
+      var needsESIM = document.getElementById("eSIM").checked;
 
       // loop thru table calculating cost and hiding rows that don't meet needs.
     
@@ -155,6 +157,18 @@ document.getElementById("wrap").addEventListener("scroll",function(){
             continue; // jump over this row
           }
         }
+        if (needs5G){
+          if (!rowMeta[eRow.G5]){
+            row.style.display = "none";
+            continue; // jump over this row
+          }
+        }
+        if (needsESIM){
+          if (!OprMetaRow[eOprMeta.eSIM]){
+            row.style.display = "none";
+            continue; // jump over this row
+          }
+        }        
         //If unlimited throttled is required, hide rows that don't have it.
         colMB = row.cells[eTbl.data];
         if (needsunlimTrot && colMB.textContent != "Unlimited"){
@@ -868,6 +882,8 @@ var moRoaming = document.getElementById('moRoaming');
 var moIosMms = document.getElementById('moIosMms');
 var moVoLTE = document.getElementById('moVoLTE');
 var moVoWiFi = document.getElementById('moVoWiFi');
+var moESIM = document.getElementById('moESIM');
+var mo5G = document.getElementById('mo5G');
 var moProfile = document.getElementById('moProfile');
 var moFmlyPlns = document.getElementById('moFmlyPlns');
 var moAutopay = document.getElementById('moAutopay');
@@ -931,7 +947,7 @@ function addRowHandlers() {
           var fullURL, URLNoProtocol, sURL,retVal;
           var calcCost='', CostPeriod;
           var cells = row.getElementsByTagName("td");
-          var eOprMeta = {URL:0,Taxes:1,Notes:2,Suffix:3,VoLTE:4, VoWiFi:5};
+          var eOprMeta = {URL:0,Taxes:1,Notes:2,Suffix:3,VoLTE:4, VoWiFi:5, eSIM:6};
           var rowPlanID = cells[eTbl.ID].innerHTML;
           var savedVals = Persist[rowPlanID][0];
           var rowMeta = RowAry[rowPlanID][0];
@@ -1057,11 +1073,23 @@ function addRowHandlers() {
             moVoLTE.innerText = 'No.';
           }
 
+          if (OprMetaRow[eOprMeta.eSIM] === 1){
+            moESIM.innerText = 'Yes, see Carrier Profile for details.';
+          }else{
+            moESIM.innerText = 'No.';
+          }
+
           if (OprMetaRow[eOprMeta.VoWiFi] === 1){
             moVoWiFi.innerText = 'Yes, see Carrier Profile for details.';
           }else{
             moVoWiFi.innerText = 'No.';
           }
+          
+          if (rowMeta[eRow.G5] === 1){
+            mo5G.innerText = 'Yes.';
+          }else{
+            mo5G.innerText = 'No.';
+          }          
 
           if(rowMeta[eRow.AllowsHotspot]){
             var Hotspot_HS_Limit = rowMeta[eRow.Hotspot_HS_Limit];

@@ -67,6 +67,10 @@ ob_start();
         <label for="VoLTE">VoLTE</label></span>
         <span class="chk"><input id="VoWiFi" type="checkbox"/>
         <label for="VoWiFi">WiFi Calling</label></span>
+        <span class="chk"><input id="5G" type="checkbox"/>
+        <label for="5G">5G</label></span>
+        <span class="chk"><input id="eSIM" type="checkbox"/>
+        <label for="eSIM">eSIM</label></span>
       </p>
       <p>
         <span class="chk"><input id="Autopay" type="checkbox"/>
@@ -214,6 +218,7 @@ error_reporting(E_ALL);
           const NameSuffix = 3;
           const VoLTE = 4;
           const VoWiFi = 5;
+          const eSIM = 6;
         }
         $sql = "select * from Operators where Active = 'Y' order by OperatorID";
         if (!$result = $connection->query($sql)) {
@@ -238,7 +243,12 @@ error_reporting(E_ALL);
               $TmpAry[eOpr::VoWiFi] = 0;
             }else{
               $TmpAry[eOpr::VoWiFi] = 1;
-            }            
+            } 
+            if($row["eSIM"]){
+              $TmpAry[eOpr::eSIM] = 1;  
+            }else{
+              $TmpAry[eOpr::eSIM] = 0; 
+            }        
             $OprMetaAry[$row["OperatorID"]] = $TmpAry;
           }
           return $OprMetaAry;
@@ -250,7 +260,7 @@ error_reporting(E_ALL);
         die ('Unable to connect to database [' . $connection->connect_error . ']');
       }
     //  $sql = "SELECT * FROM Plans";
-      $sql = "select Plans.ID as PlanID, Plans.MonthlyCost as MonthlyCost, Operators.Name as Operator, Networks.Name as Network, Plans.Name as Plan, Cost, CostType, Minutes, Texts, AppleSupportLevel & 1=1 as MMS, Data, OverageThrottle, Plans.Notes as Notes, isPayGo, HasRollover, LineFee, MultiLine, Plans.OperatorID, AllowsHotspot, Hotspot_HS_Limit, Hotspot_HS_Throttle, HotspotThrottle, TextRoaming, VoiceRoaming, DataRoaming, AutopayDiscount, NoVoLTE, BaseThrottle, DataShared from Plans join Operators on Plans.OperatorID = Operators.OperatorID join Networks on Operators.NetworkID = Networks.NetworkID where Operators.Active = 'Y' order by MonthlyCost, Operator, Network";
+      $sql = "select Plans.ID as PlanID, Plans.MonthlyCost as MonthlyCost, Operators.Name as Operator, Networks.Name as Network, Plans.Name as Plan, Cost, CostType, Minutes, Texts, AppleSupportLevel & 1=1 as MMS, Data, OverageThrottle, Plans.Notes as Notes, isPayGo, HasRollover, LineFee, MultiLine, Plans.OperatorID, AllowsHotspot, Hotspot_HS_Limit, Hotspot_HS_Throttle, HotspotThrottle, TextRoaming, VoiceRoaming, DataRoaming, AutopayDiscount, NoVoLTE, BaseThrottle, DataShared, 5G from Plans join Operators on Plans.OperatorID = Operators.OperatorID join Networks on Operators.NetworkID = Networks.NetworkID where Operators.Active = 'Y' order by MonthlyCost, Operator, Network";
       if (!$result = $connection->query($sql)) {
           die ('There was an error running query[' . $connection->error . ']');
       }
@@ -441,6 +451,7 @@ error_reporting(E_ALL);
       $tempRow[]=$row['NoVoLTE'];
       $tempRow[]=$row['BaseThrottle'];
       $tempRow[]=$row['DataShared'];
+      $tempRow[]=$row['5G'];
       $rowMeta[$PlanID][]=$tempRow;
       $rowPersist[$PlanID][]=$tempPersist;
       }

@@ -1,6 +1,6 @@
-CREATE TABLE tmptable_1 SELECT * FROM Plans WHERE OperatorID = 91;
+CREATE TABLE tmptable_1 SELECT * FROM Plans WHERE OperatorID = 100;
 ALTER TABLE tmptable_1 MODIFY ID int(11) null;
-UPDATE tmptable_1 SET ID = NULL, OperatorID = 121;
+UPDATE tmptable_1 SET ID = NULL, OperatorID = 123;
 INSERT INTO Plans SELECT * FROM tmptable_1;
 DROP TABLE IF EXISTS tmptable_1;
 
